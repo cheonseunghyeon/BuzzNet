@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import FormInput from "./FormInput";
+import { SocialLoginButtons } from "./SocialLoginButtons";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +27,8 @@ export const LoginForm = () => {
         <span className="px-4 text-gray-500">또는</span>
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
+
+      <SocialLoginButtons />
     </form>
   );
 };
