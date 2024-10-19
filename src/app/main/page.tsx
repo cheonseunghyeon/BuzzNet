@@ -1,9 +1,11 @@
 "use client";
+
 import React, { useState } from "react";
 import mockPostsData from "../mock/Post-mock.json";
 
 import { PostType } from "../types";
-import Post from "../components/Post-item";
+import Post from "../components/PostItem";
+import Link from "next/link";
 
 const Home = () => {
   const [mockPosts] = useState<PostType[]>(mockPostsData);
@@ -11,7 +13,9 @@ const Home = () => {
   return (
     <div className="max-w-6xl mx-auto pt-4">
       {mockPosts.map((post, index) => (
-        <Post key={index} post={post} />
+        <Link href={`/detail/${index}`} key={index}>
+          <Post post={post} />
+        </Link>
       ))}
     </div>
   );
