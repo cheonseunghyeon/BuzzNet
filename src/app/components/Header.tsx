@@ -15,6 +15,12 @@ const Header = () => {
           <li>
             <Link href="/signup">Signup</Link>
           </li>
+          <li>
+            <Link href="/mypage">Mypage</Link>
+          </li>
+          <li>
+            <Link href="/profile">Profile</Link>
+          </li>
         </ul>
       </nav>
     </header>

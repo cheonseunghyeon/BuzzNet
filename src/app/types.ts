@@ -17,3 +17,12 @@ export interface CommentType {
   commentText: string;
   likes: number;
 }
+
+export interface UserType {
+  id: number;
+  name: string;
+  profileImage: string;
+  posts: number;
+  likes: number;
+  comments: number;
+}

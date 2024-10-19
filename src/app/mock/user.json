@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "profileImage": "https://via.placeholder.com/56",
+    "posts": 150,
+    "likes": 230,
+    "comments": 45
+  }
+]
