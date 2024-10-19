@@ -1,0 +1,42 @@
+[
+  {
+    "userName": "Jane Doe",
+    "profileImage": "https://via.placeholder.com/56",
+    "postDate": "2 days ago",
+    "postContent": "여기에 게시물 사진이 없습니다.",
+    "postImage": "",
+    "likes": 4300,
+    "comments": 1200,
+    "shares": 345
+  },
+  {
+    "userName": "John Smith",
+    "profileImage": "https://via.placeholder.com/56",
+    "postDate": "3 days ago",
+    "postContent": "",
+    "postImage": "https://via.placeholder.com/960x540",
+    "likes": 3200,
+    "comments": 900,
+    "shares": 290
+  },
+  {
+    "userName": "Alice Brown",
+    "profileImage": "https://via.placeholder.com/56",
+    "postDate": "1 day ago",
+    "postContent": "Alice의 첫 번째 게시물입니다. 여기에서 다양한 이야기를 나누고 싶습니다.",
+    "postImage": "https://via.placeholder.com/960x540",
+    "likes": 2100,
+    "comments": 650,
+    "shares": 185
+  },
+  {
+    "userName": "David Lee",
+    "profileImage": "https://via.placeholder.com/56",
+    "postDate": "5 hours ago",
+    "postContent": "David의 새 게시물입니다. 이 프로젝트에 대해 이야기할 예정입니다.",
+    "postImage": "https://via.placeholder.com/960x540",
+    "likes": 5100,
+    "comments": 2300,
+    "shares": 640
+  }
+]
