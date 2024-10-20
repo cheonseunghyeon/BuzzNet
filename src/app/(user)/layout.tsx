@@ -12,10 +12,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="flex h-screen max-w-8xl mx-auto">
+      <div className="flex h-screen max-w-7xl mx-auto w-full">
         <Sidebar user={loggedInUser} />
-
-        <main className="flex-grow h-full p-8">{children}</main>
+        <main className="flex-grow max-w-6xl h-full p-8 ">{children}</main>
       </div>
     </div>
   );

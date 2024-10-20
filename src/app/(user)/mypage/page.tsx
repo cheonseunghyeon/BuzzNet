@@ -11,7 +11,7 @@ const MyPage = () => {
   const [mockPosts] = useState<PostType[]>(mockPostsData);
 
   return (
-    <div className="max-w-6xl mx-auto pt-4">
+    <div className="pt-4">
       {mockPosts.map((post, index) => (
         <Link href={`/detail/${index}`} key={index}>
           <Post post={post} />
