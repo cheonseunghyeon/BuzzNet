@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import users from "../../../../mock/user.json";
 import { UserType } from "../../../../types";
 import SelectedUser from "../../../components/SelectedUser";
-import UserList from "../../../components/UserList";
+import UserList from "../../../components/List/UserList";
 import Link from "next/link";
 
 const Follower = () => {

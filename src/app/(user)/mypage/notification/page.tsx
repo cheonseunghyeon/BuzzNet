@@ -1,5 +1,7 @@
+import NotificationList from "../../components/List/NotificationList";
+
 const Notifications = () => {
-  return <div className="max-w-6xl mx-auto pt-4">알람</div>;
+  return <NotificationList />;
 };
 
 export default Notifications;

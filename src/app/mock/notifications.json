@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "user": {
+      "name": "John Doe",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "like",
+    "message": "liked your post.",
+    "timestamp": "2023-10-18T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "user": {
+      "name": "Jane Smith",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "comment",
+    "message": "commented on your post.",
+    "timestamp": "2023-10-18T13:00:00Z"
+  },
+  {
+    "id": 3,
+    "user": {
+      "name": "Alex Johnson",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "follow",
+    "message": "started following you.",
+    "timestamp": "2023-10-18T14:00:00Z"
+  },
+  {
+    "id": 4,
+    "user": {
+      "name": "Emily Davis",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "like",
+    "message": "liked your post.",
+    "timestamp": "2023-10-18T15:00:00Z"
+  },
+  {
+    "id": 5,
+    "user": {
+      "name": "Michael Brown",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "comment",
+    "message": "commented on your post.",
+    "timestamp": "2023-10-18T16:00:00Z"
+  },
+  {
+    "id": 6,
+    "user": {
+      "name": "Sarah Wilson",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "follow",
+    "message": "started following you.",
+    "timestamp": "2023-10-18T17:00:00Z"
+  },
+  {
+    "id": 7,
+    "user": {
+      "name": "David Lee",
+      "profileImage": "https://via.placeholder.com/56"
+    },
+    "type": "like",
+    "message": "liked your post.",
+    "timestamp": "2023-10-18T18:00:00Z"
+  }
+]
