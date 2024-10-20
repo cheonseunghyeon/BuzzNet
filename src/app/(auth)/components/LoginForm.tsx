@@ -3,19 +3,32 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
 import { SocialLoginButtons } from "./SocialLoginButtons";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/init";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("로그인 시도:", { email, password });
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("User logged in:", userCredential.user);
+      router.push("/main");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+      } else {
+        console.error("Unknown error occurred");
+      }
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* type=email 은 email 형식인지 유효성 검사 진행 */}
       <FormInput type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
       <FormInput type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
       <button type="submit" className="w-full bg-blue-500 text-white p-4 mb-4 rounded-lg hover:bg-blue-600">

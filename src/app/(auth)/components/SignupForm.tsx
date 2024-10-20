@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/firebase/init";
+// import { doc, setDoc } from "firebase/firestore";
+// import { auth, db } from "@/firebase/init";
+import { auth } from "@/firebase/init";
+import { useRouter } from "next/navigation";
 
 export const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ export const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
 
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -23,13 +26,13 @@ export const SignupForm = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log("User signed up and data stored in Firestore:", user.uid);
-
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: user.email,
-        name: name,
-        createdAt: new Date(),
-      });
+      router.push("/login");
+      // await setDoc(doc(db, "users", user.uid), {
+      //   uid: user.uid,
+      //   email: user.email,
+      //   name: name,
+      //   createdAt: new Date(),
+      // });
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
