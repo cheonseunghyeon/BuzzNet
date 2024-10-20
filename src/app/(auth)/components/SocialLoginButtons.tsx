@@ -2,11 +2,19 @@
 
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/firebase/init";
 
 export const SocialLoginButtons = () => {
-  const handleGoogleLogin = () => {
-    // 임시로 Google 로그인 처리
-    console.log("Google 로그인");
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Google 로그인 성공:", user);
+    } catch (error) {
+      console.error("Google 로그인 오류:", error);
+    }
   };
 
   const handleFacebookLogin = () => {
