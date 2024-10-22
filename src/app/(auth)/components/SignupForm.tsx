@@ -1,11 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import FormInput from "./FormInput";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-// import { doc, setDoc } from "firebase/firestore";
-// import { auth, db } from "@/firebase/init";
-import { auth } from "@/firebase/init";
-import { useRouter } from "next/navigation";
+import { useRegisterUser } from "@/lib/auth/hooks/useRegisterUser";
 
 export const SignupForm = () => {
   const [email, setEmail] = useState("");
@@ -13,33 +9,15 @@ export const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
 
-  const router = useRouter();
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const { mutate: registerUser, isPending: isLoading } = useRegisterUser();
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (password !== confirmpassword) {
-      alert("Passwords do not match."); // 후에 toast로 변경 예정
+      alert("Passwords do not match.");
       return;
     }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log("User signed up and data stored in Firestore:", user.uid);
-      router.push("/login");
-      // await setDoc(doc(db, "users", user.uid), {
-      //   uid: user.uid,
-      //   email: user.email,
-      //   name: name,
-      //   createdAt: new Date(),
-      // });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Unknown error occurred");
-      }
-    }
+    registerUser({ email, password, name });
   };
 
   return (
@@ -53,8 +31,12 @@ export const SignupForm = () => {
         value={confirmpassword}
         onChange={e => setConfirmpassword(e.target.value)}
       />
-      <button type="submit" className="w-full bg-blue-500 text-white p-4 mb-8 rounded-lg hover:bg-blue-600">
-        회원가입
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white p-4 mb-8 rounded-lg hover:bg-blue-600"
+        disabled={isLoading}
+      >
+        {isLoading ? "Loading..." : "회원가입"}
       </button>
     </form>
   );
