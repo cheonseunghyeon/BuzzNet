@@ -1,5 +1,5 @@
 import React from "react";
-import notifications from "../../../mock/notifications.json";
+import notifications from "@/mock/notifications.json";
 
 const NotificationList = () => {
   return (

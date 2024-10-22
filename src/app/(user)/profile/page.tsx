@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import mockPostsData from "../../mock/Post-mock.json";
+import mockPostsData from "@/mock/Post-mock.json";
 
 import { PostType } from "../../types";
 import Link from "next/link";

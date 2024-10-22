@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import messages from "../../../mock/messages.json";
-import users from "../../../mock/user.json";
+import messages from "../../../../mock/messages.json";
+import users from "../../../../mock/user.json";
 
 const MessageList = () => {
   const [currentUser] = useState(users[0]);

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import mockPostsData from "../../mock/Post-mock.json";
+import mockPostsData from "@/mock/Post-mock.json";
 import { CommentType, PostType } from "../../types";
 import PostActions from "@/app/components/PostActions";
-import commentsData from "../../mock/comments.json";
+import commentsData from "@/mock/comments.json";
 import PostHeader from "./components/PostHeader";
 import PostImage from "./components/PostImage";
 import PostComments from "./components/PostComments";

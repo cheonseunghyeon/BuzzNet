@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import loginuser from "../mock/user.json";
+import loginuser from "@/mock/user.json";
 import { UserType } from "../types";
 import Sidebar from "./components/Sidebar";
 
