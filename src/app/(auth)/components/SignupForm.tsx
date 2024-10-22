@@ -19,10 +19,9 @@ export const SignupForm = () => {
 
   const onSubmit = (data: SignupFormData) => {
     if (data.password !== data.confirmpassword) {
-      showToast("비밀번호가 틀립니다");
+      showToast("비밀번호가 다릅니다 다시 확인해주세요");
       return;
     }
-    showToast("회원가입에 성공하셨습니다");
     registerUser({ email: data.email, password: data.password, name: data.name });
   };
 
@@ -91,7 +90,7 @@ export const SignupForm = () => {
       </div>
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600"
+        className="w-full bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 mt-2"
         disabled={isLoading}
       >
         {isLoading ? "Loading..." : "회원가입"}

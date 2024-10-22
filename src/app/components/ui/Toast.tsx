@@ -7,29 +7,29 @@ const Toast: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white text-2xl font-bold px-12 py-6 rounded-2xl shadow-2xl text-center z-50 animate-fadeInOut">
-      {message}
+    <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-300 to-blue-400 text-white text-xl font-semibold px-12 py-6 rounded-2xl shadow-lg text-center z-50 animate-fadeInOut">
+      <span>{message}</span>
       <style jsx>{`
         @keyframes fadeInOut {
           0% {
             opacity: 0;
-            visibility: hidden;
+            transform: translateX(-50%) translateY(20px);
           }
           10% {
             opacity: 1;
-            visibility: visible;
+            transform: translateX(-50%) translateY(0);
           }
           90% {
             opacity: 1;
-            visibility: visible;
+            transform: translateX(-50%) translateY(0);
           }
           100% {
             opacity: 0;
-            visibility: hidden;
+            transform: translateX(-50%) translateY(20px);
           }
         }
         .animate-fadeInOut {
-          animation: fadeInOut 2s;
+          animation: fadeInOut 3s ease-in-out;
         }
       `}</style>
     </div>

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "./SocialLoginButtons";
 import { useLogin } from "@/lib/auth/hooks/useLogin";
 import { LoginFormData } from "../type";
+import Toast from "@/app/components/ui/Toast";
 
 export const LoginForm = () => {
   const {
@@ -21,6 +22,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <Toast />
       <div className="text-xl font-semibold text-gray-700 mb-2">Email</div>
       <input
         {...register("email", {
@@ -29,7 +31,7 @@ export const LoginForm = () => {
         })}
         type="email"
         placeholder="Enter your email"
-        className="w-full p-3 border border-gray-300 rounded-lg mb-2"
+        className="w-full p-3 border border-gray-300 rounded-lg "
         onKeyUp={() => trigger("email")}
       />
       <p className="text-red-500 mb-2">
@@ -44,10 +46,10 @@ export const LoginForm = () => {
         })}
         type="password"
         placeholder="Enter your password"
-        className="w-full p-3 border border-gray-300 rounded-lg mb-2"
+        className="w-full p-3 border border-gray-300 rounded-lg"
         onKeyUp={() => trigger("password")}
       />
-      <p className="text-red-500 mb-2">
+      <p className="text-red-500 mb-4">
         {errors.password && typeof errors.password.message === "string" ? errors.password.message : "\u00A0"}
       </p>
 
