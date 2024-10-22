@@ -1,26 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
-import FormInput from "./FormInput";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "./SocialLoginButtons";
 import { useLogin } from "@/lib/auth/hooks/useLogin";
+import { LoginFormData } from "../type";
 
 export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm<LoginFormData>();
   const { mutate: login, isPending: isLoading } = useLogin();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    login({ email, password });
+  const onSubmit = (data: LoginFormData) => {
+    login({ email: data.email, password: data.password });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormInput type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-      <FormInput type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button type="submit" className="w-full bg-blue-500 text-white p-4 mb-4 rounded-lg hover:bg-blue-600">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="text-xl font-semibold text-gray-700 mb-2">Email</div>
+      <input
+        {...register("email", {
+          required: "Email is required",
+          pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" },
+        })}
+        type="email"
+        placeholder="Enter your email"
+        className="w-full p-3 border border-gray-300 rounded-lg mb-2"
+        onKeyUp={() => trigger("email")}
+      />
+      <p className="text-red-500 mb-2">
+        {errors.email && typeof errors.email.message === "string" ? errors.email.message : "\u00A0"}
+      </p>
+
+      <div className="text-xl font-semibold text-gray-700 mb-2">Password</div>
+      <input
+        {...register("password", {
+          required: "Password is required",
+          minLength: { value: 6, message: "Password must be at least 6 characters" },
+        })}
+        type="password"
+        placeholder="Enter your password"
+        className="w-full p-3 border border-gray-300 rounded-lg mb-2"
+        onKeyUp={() => trigger("password")}
+      />
+      <p className="text-red-500 mb-2">
+        {errors.password && typeof errors.password.message === "string" ? errors.password.message : "\u00A0"}
+      </p>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white p-4 mb-4 rounded-lg hover:bg-blue-600 mt-2"
+        disabled={isLoading}
+      >
         {isLoading ? "로그인 중..." : "로그인"}
       </button>
 
