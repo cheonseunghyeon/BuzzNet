@@ -1,6 +1,8 @@
-import { AuthUser } from "@/lib/auth/types";
+import { IUser } from "@/lib/auth/types";
 
 export interface AuthState {
-  user: AuthUser | null;
-  setUser: (user: AuthUser) => void;
+  isLogin: boolean;
+  user: IUser | null;
+  setIsLogin: (isLogin: boolean) => void;
+  setUser: (user: IUser) => void;
 }

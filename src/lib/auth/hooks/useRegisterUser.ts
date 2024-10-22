@@ -11,7 +11,7 @@ export const useRegisterUser = () => {
     mutationFn: registerUserAPI,
     onSuccess: () => {
       // addToast('회원가입 성공!', 'success');
-      router.push("/main");
+      router.push("/login");
     },
     onError: (error: Error) => {
       //   addToast('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.', 'error');
