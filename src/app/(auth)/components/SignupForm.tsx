@@ -3,8 +3,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useRegisterUser } from "@/lib/auth/hooks/useRegisterUser";
 import { SignupFormData } from "../type";
+import { useToastStore } from "@/store/toast/useToastStore";
+import Toast from "@/app/components/ui/Toast";
 
 export const SignupForm = () => {
+  const showToast = useToastStore(state => state.showToast);
   const {
     register,
     handleSubmit,
@@ -16,14 +19,16 @@ export const SignupForm = () => {
 
   const onSubmit = (data: SignupFormData) => {
     if (data.password !== data.confirmpassword) {
-      alert("Passwords do not match.");
+      showToast("비밀번호가 틀립니다");
       return;
     }
+    showToast("회원가입에 성공하셨습니다");
     registerUser({ email: data.email, password: data.password, name: data.name });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-6 max-w-lg mx-auto">
+      <Toast />
       <div className="mb-2">
         <div className="text-xl font-semibold text-gray-700 mb-2">Email</div>
         <input
