@@ -3,10 +3,11 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { user, isLogin, logout, checkLoginStatus } = useAuthStore();
-
+  const router = useRouter();
   useEffect(() => {
     checkLoginStatus();
   }, []);
@@ -38,6 +39,7 @@ const Header = () => {
                 <button
                   onClick={() => {
                     logout();
+                    router.push("/login");
                   }}
                 >
                   로그아웃
