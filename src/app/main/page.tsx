@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import mockPostsData from "@/mock/Post-mock.json";
 
 import { PostType } from "../types";
-import Post from "../components/PostItem";
+import Post from "@/components/PostItem";
 import Link from "next/link";
 import { useModalStore } from "@/store/modal/useModalStore";
-import CreatePostModal from "../components/ui/modal/CreatePostModal";
-import EditPostModal from "../components/ui/modal/EditPostModal";
+import CreatePostModal from "@/components/ui/modal/CreatePostModal";
+import EditPostModal from "@/components/ui/modal/EditPostModal";
 
 const Home = () => {
   const [mockPosts] = useState<PostType[]>(mockPostsData);
@@ -25,7 +25,7 @@ const Home = () => {
         </div>
       </div>
       {mockPosts.map((post, index) => (
-        <Link href={`/detail/${index}`} key={index}>
+        <Link href={`/post/${index}`} key={index}>
           <Post post={post} />
         </Link>
       ))}
