@@ -11,11 +11,16 @@ const Header = () => {
 
   useEffect(() => {
     checkLoginStatus();
-  }, []);
+  }, [checkLoginStatus]);
 
   if (isLogin === undefined) {
     return <div>Loading...</div>;
   }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
 
   return (
     <header className="bg-white p-4">
@@ -37,14 +42,7 @@ const Header = () => {
                 <Link href="/mypage"> {user.name}</Link>
               </li>
               <li>
-                <button
-                  onClick={() => {
-                    logout();
-                    router.push("/login");
-                  }}
-                >
-                  로그아웃
-                </button>
+                <button onClick={handleLogout}>로그아웃</button>
               </li>
             </>
           ) : (

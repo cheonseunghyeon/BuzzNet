@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/init";
+// import { auth } from "@/firebase/init";
 import Cookies from "js-cookie";
 import { create } from "zustand";
 import { AuthState } from "./types";
@@ -9,30 +9,53 @@ export const useAuthStore = create<AuthState>(set => ({
   registerStatus: "idle",
   registerError: null,
 
+  // checkLoginStatus: async () => {
+  //   const token = Cookies.get("accessToken");
+  //   console.log(token);
+  //   if (token) {
+  //     auth.onAuthStateChanged(currentUser => {
+  //       if (currentUser) {
+  //         set({
+  //           user: {
+  //             uid: currentUser.uid,
+  //             email: currentUser.email ?? "",
+  //             name: currentUser.displayName ?? "",
+  //           },
+  //           isLogin: true,
+  //         });
+  //       } else {
+  //         set({ user: null, isLogin: false });
+  //         console.error("유저 정보를 가져올 수 없습니다.");
+  //       }
+  //     });
+  //   }
+  // },
   checkLoginStatus: async () => {
-    const token = Cookies.get("accessToken");
-    console.log(token);
-    if (token) {
-      auth.onAuthStateChanged(currentUser => {
-        if (currentUser) {
-          set({
-            user: {
-              uid: currentUser.uid,
-              email: currentUser.email ?? "",
-              name: currentUser.displayName ?? "",
-            },
-            isLogin: true,
-          });
-        } else {
-          set({ user: null, isLogin: false });
-          console.error("유저 정보를 가져올 수 없습니다.");
-        }
+    const response = await fetch("/api/check-auth", {
+      method: "GET",
+      credentials: "include", // 쿠키를 포함해 서버에 요청
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      set({
+        user: {
+          uid: data.uid,
+          email: data.email,
+          name: data.name ?? "",
+        },
+        isLogin: true,
       });
+    } else {
+      set({ user: null, isLogin: false });
     }
   },
 
-  logout: () => {
-    Cookies.remove("accessToken");
+  logout: async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+    });
+
     set({
       isLogin: false,
       user: null,
