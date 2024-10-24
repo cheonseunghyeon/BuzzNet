@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import users from "@/mock/user.json";
-import { UserType } from "../../../../types";
+import { UserType } from "../../../../../components/types";
 import SelectedUser from "../../../components/SelectedUser";
 import UserList from "../../../components/List/UserList";
 import Link from "next/link";

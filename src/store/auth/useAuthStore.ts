@@ -11,6 +11,7 @@ export const useAuthStore = create<AuthState>(set => ({
 
   checkLoginStatus: async () => {
     const token = Cookies.get("accessToken");
+    console.log(token);
     if (token) {
       auth.onAuthStateChanged(currentUser => {
         if (currentUser) {

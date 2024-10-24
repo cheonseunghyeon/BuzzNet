@@ -1,5 +1,5 @@
 import React from "react";
-import { UserType } from "@/app/types";
+import { UserType } from "@/components/types";
 
 const UserList = ({ users, onUserClick }: { users: UserType[]; onUserClick: (user: UserType) => void }) => (
   <div className="mt-4 space-y-2">

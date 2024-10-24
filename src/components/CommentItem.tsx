@@ -1,6 +1,6 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-import { CommentType } from "../types";
+import { CommentType } from "./types";
 
 const CommentItem = ({ comment }: { comment: CommentType }) => {
   return (

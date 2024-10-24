@@ -1,4 +1,4 @@
-import { PostType } from "@/app/types";
+import { PostType } from "@/components/types";
 import React from "react";
 
 interface PostHeaderProps {

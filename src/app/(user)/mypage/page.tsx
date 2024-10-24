@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import mockPostsData from "@/mock/Post-mock.json";
 
-import { PostType } from "../../types";
+import { PostType } from "../../../components/types";
 import Link from "next/link";
 import Post from "@/components/PostItem";
 

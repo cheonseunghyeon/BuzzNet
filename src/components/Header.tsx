@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 const Header = () => {
   const { user, isLogin, logout, checkLoginStatus } = useAuthStore();
   const router = useRouter();
+
   useEffect(() => {
     checkLoginStatus();
   }, []);

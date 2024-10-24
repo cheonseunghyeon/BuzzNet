@@ -1,4 +1,4 @@
-import { UserType } from "@/app/types";
+import { UserType } from "@/components/types";
 import React from "react";
 
 const UserProfile = ({ user }: { user: UserType }) => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import mockPostsData from "@/mock/Post-mock.json";
-import { CommentType, PostType } from "../../types";
+import { CommentType, PostType } from "@/components/types";
 import PostActions from "@/components/PostActions";
 import commentsData from "@/mock/comments.json";
 import PostHeader from "./components/PostHeader";

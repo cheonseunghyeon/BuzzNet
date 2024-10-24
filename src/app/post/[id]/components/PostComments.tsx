@@ -1,6 +1,6 @@
 import React from "react";
-import CommentItem from "@/app/components/CommentItem";
-import { CommentType } from "@/app/types";
+import CommentItem from "@/components/CommentItem";
+import { CommentType } from "@/components/types";
 
 interface PostCommentsProps {
   comments: CommentType[];
