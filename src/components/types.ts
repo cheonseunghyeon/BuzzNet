@@ -26,3 +26,7 @@ export interface UserType {
   likes: number;
   comments: number;
 }
+
+export interface CloseButtonProps {
+  onClick: () => void;
+}

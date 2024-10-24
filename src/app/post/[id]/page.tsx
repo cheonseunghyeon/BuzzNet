@@ -9,7 +9,7 @@ import PostHeader from "./components/PostHeader";
 import PostImage from "./components/PostImage";
 import PostComments from "./components/PostComments";
 
-interface PostDetailProps {
+export interface PostDetailProps {
   params: { id: string };
 }
 
