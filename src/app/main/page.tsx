@@ -5,6 +5,7 @@ import { PostType } from "../../components/types";
 import Post from "@/components/PostItem";
 import Link from "next/link";
 import { fetchPosts } from "@/lib/fetchPosts";
+import { FaPaperPlane, FaRegImage } from "react-icons/fa";
 
 const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -29,8 +30,19 @@ const Home = () => {
   return (
     <div className="max-w-6xl mx-auto pt-4">
       <div className="bg-white shadow-md rounded-lg mb-4">
-        <Link href={`/post-create`}>
-          <div className="flex items-center p-4">게시물 생성</div>
+        <Link href={`/post-create`} className="flex flex-col border border-gray-300 rounded-xl p-2 pr-4 gap-2 ">
+          <div className="flex flex-col border border-gray-300 rounded-xl p-2 pr-4 gap-2 cursor-pointer">
+            <div className="w-full p-2 border border-white rounded-lg resize-none outline-none text-gray-500">
+              내용을 입력하세요
+            </div>
+            <div className="flex items-center justify-end space-x-4">
+              <FaRegImage className="text-2xl text-gray-500" />
+              <button className="p-2 bg-blue-500 text-white rounded-lg font-bold flex items-center gap-1">
+                Create
+                <FaPaperPlane className="text-md" />
+              </button>
+            </div>
+          </div>
         </Link>
       </div>
 
