@@ -31,7 +31,7 @@ export default function Modal({ children }: { children: ReactNode }) {
         }`}
       >
         <CloseButton onClick={closeModal} />
-        <div className="p-4 border-t border-gray-300 bg-blue-50 rounded-lg">{children}</div>
+        <div className="p-4 border-t bg-blue-50 rounded-lg">{children}</div>
       </div>
     </div>,
     document.getElementById("modal-root") as HTMLElement,
