@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "./SocialLoginButtons";
 import { useLogin } from "@/lib/auth/hooks/useLogin";
 import { LoginFormData } from "../type";
-import Toast from "@/app/components/ui/Toast";
+import Toast from "@/components/ui/Toast";
 
 export const LoginForm = () => {
   const {

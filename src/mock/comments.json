@@ -32,14 +32,6 @@
     "likes": 3
   },
   {
-    "postId": 2,
-    "userName": "Chars",
-    "profileImage": "https://via.placeholder.com/56",
-    "commentDate": "4 hours ago",
-    "commentText": "I found this post very helpful.",
-    "likes": 8
-  },
-  {
     "postId": 3,
     "userName": "David",
     "profileImage": "https://via.placeholder.com/56",

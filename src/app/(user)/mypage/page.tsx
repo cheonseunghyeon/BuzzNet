@@ -1,22 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
-import mockPostsData from "@/mock/Post-mock.json";
+import React, { useEffect, useState } from "react";
 
-import { PostType } from "../../types";
+import { PostType } from "../../../components/types";
 import Link from "next/link";
-import Post from "@/app/components/PostItem";
+import Post from "@/components/PostItem";
+import { fetchPosts } from "@/lib/fetchPosts";
 
 const MyPage = () => {
-  const [mockPosts] = useState<PostType[]>(mockPostsData);
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const postsData = await fetchPosts();
+        setPosts(postsData);
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
 
   return (
     <div className="pt-4">
-      {mockPosts.map((post, index) => (
-        <Link href={`/detail/${index}`} key={index}>
-          <Post post={post} />
-        </Link>
-      ))}
+      {loading ? (
+        <div className="text-center text-gray-500">로딩 중...</div>
+      ) : (
+        posts.map(post => (
+          <Link href={`/post/${post.id}`} key={post.id}>
+            <Post post={post} />
+          </Link>
+        ))
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import loginuser from "@/mock/user.json";
-import { UserType } from "../types";
+import { UserType } from "../../components/types";
 import Sidebar from "./components/Sidebar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

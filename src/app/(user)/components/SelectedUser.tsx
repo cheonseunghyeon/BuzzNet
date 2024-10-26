@@ -1,5 +1,5 @@
 import React from "react";
-import { UserType } from "@/app/types";
+import { UserType } from "@/components/types";
 
 const SelectedUser = ({ user }: { user: UserType }) => (
   <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg mb-4">
