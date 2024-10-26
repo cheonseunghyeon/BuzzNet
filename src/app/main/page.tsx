@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { PostType } from "../../components/types";
 import Post from "@/components/PostItem";
 import Link from "next/link";
-import { fetchPosts } from "@/lib/fetchPosts";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "@/firebase/init";
 import { FaPaperPlane, FaRegImage } from "react-icons/fa";
 
 const Home = () => {
@@ -12,21 +13,24 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const postsData = await fetchPosts();
-        setPosts(postsData);
-      } catch (error) {
-        console.error("Error fetching posts: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
-    loadPosts();
+    const unsubscribe = onSnapshot(q, snapshot => {
+      const postsData = snapshot.docs.map(
+        doc =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt.toDate(),
+          } as PostType),
+      );
+      setPosts(postsData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  console.log(posts);
   return (
     <div className="max-w-6xl mx-auto pt-4">
       <div className="bg-white shadow-md rounded-lg mb-4">

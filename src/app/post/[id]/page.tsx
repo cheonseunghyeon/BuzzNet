@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { CommentType, PostType } from "@/components/types";
 import PostActions from "@/components/PostActions";
@@ -25,38 +25,33 @@ const PostDetail = ({ params }: PostDetailProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    const loadPost = async () => {
-      try {
-        const postRef = doc(db, "posts", params.id);
-        const postSnap = await getDoc(postRef);
-
-        if (postSnap.exists()) {
-          const data = postSnap.data();
-          setPost({
-            id: postSnap.id,
-            author: {
-              displayName: data.author.displayName,
-              uid: data.author.uid,
-            },
-            content: data.content,
-            createdAt: data.createdAt.toDate(),
-            imageUrl: data.imageUrl,
-            likes: data.likes,
-            comments: data.comments,
-            shares: data.shares,
-          } as PostType);
-          setEditContent(data.content);
-        } else {
-          console.error("No such post!");
-        }
-      } catch (error) {
-        console.error("Error fetching post: ", error);
-      } finally {
-        setLoading(false);
+    const postRef = doc(db, "posts", params.id);
+    const unsubscribe = onSnapshot(postRef, postSnap => {
+      if (postSnap.exists()) {
+        const data = postSnap.data();
+        setPost({
+          id: postSnap.id,
+          author: {
+            displayName: data.author.displayName,
+            uid: data.author.uid,
+          },
+          content: data.content,
+          createdAt: data.createdAt.toDate(),
+          imageUrl: data.imageUrl,
+          likes: data.likes,
+          comments: data.comments,
+          shares: data.shares,
+        } as PostType);
+        setEditContent(data.content);
+      } else {
+        console.error("No such post!");
+        setPost(null); // 데이터가 없을 경우 post를 null로 설정
       }
-    };
+      setLoading(false);
+    });
 
-    loadPost();
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => unsubscribe();
   }, [params.id]);
 
   const [comments] = useState<CommentType[]>(commentsData);
@@ -67,7 +62,6 @@ const PostDetail = ({ params }: PostDetailProps) => {
     try {
       const postRef = doc(db, "posts", post.id);
       await updateDoc(postRef, { content: editContent });
-      setPost(prevPost => (prevPost ? { ...prevPost, content: editContent } : null));
       setIsEditing(false);
       setIsMenuOpen(false);
     } catch (error) {

@@ -9,7 +9,7 @@ const Post = ({ post }: { post: PostType }) => {
     <div className="bg-white shadow-md rounded-lg mb-4">
       <div className="flex items-center p-4">
         <img src="/default-profile.png" alt="Profile" className="w-14 h-14 rounded-full" />
-        <div className="ml-4">
+        <div className="ml-4 flex flex-col">
           <span className="font-bold text-lg">{author.displayName}</span>
           <span className="text-gray-500 text-sm">{createdAt.toLocaleString()}</span>
         </div>
