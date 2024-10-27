@@ -5,27 +5,31 @@ import React, { useEffect, useState } from "react";
 import { PostType } from "../../../components/types";
 import Link from "next/link";
 import Post from "@/components/PostItem";
-import { fetchPosts } from "@/lib/fetchPosts";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "@/firebase/init";
 
 const MyPage = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const postsData = await fetchPosts();
-        setPosts(postsData);
-      } catch (error) {
-        console.error("Error fetching posts: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
-    loadPosts();
+    const unsubscribe = onSnapshot(q, snapshot => {
+      const postsData = snapshot.docs.map(
+        doc =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt.toDate(),
+          } as PostType),
+      );
+      setPosts(postsData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
-
   return (
     <div className="pt-4">
       {loading ? (

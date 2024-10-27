@@ -22,6 +22,7 @@ export const useAuthStore = create<AuthState>(set => ({
           uid: data.uid,
           email: data.email,
           name: data.name ?? "",
+          imageUrl: data.imageUrl,
         },
         isLogin: true,
       });
