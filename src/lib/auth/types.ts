@@ -9,14 +9,12 @@ export interface IUser {
   uid: string;
   email: string;
   name: string;
-  imageUrl?: string;
 }
 
 export interface RegisterUserReqDTO {
   email: string;
   password: string;
   name: string;
-  imageUrl?: string;
 }
 
 export interface LoginRequestDTO {

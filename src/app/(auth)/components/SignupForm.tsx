@@ -22,7 +22,7 @@ export const SignupForm = () => {
       showToast("비밀번호가 다릅니다 다시 확인해주세요");
       return;
     }
-    registerUser({ email: data.email, password: data.password, name: data.name, imageUrl: "" });
+    registerUser({ email: data.email, password: data.password, name: data.name });
   };
 
   return (

@@ -19,7 +19,6 @@ export async function POST(req: NextRequest) {
       email,
       bio: null,
       createdAt: new Date(),
-      imageUrl: "",
     });
 
     return NextResponse.json({ uid: user.uid, email: user.email, name });
