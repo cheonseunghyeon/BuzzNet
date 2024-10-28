@@ -99,6 +99,10 @@ const PostCreateForm: React.FC = () => {
               placeholder="내용을 입력하세요"
               value={content}
               onChange={e => setContent(e.target.value)}
+              onInput={e => {
+                e.currentTarget.style.height = "auto";
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
               required
               className="w-full p-2 border border-white rounded-lg resize-none outline-none"
             />

@@ -3,20 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
-import { CommentType, PostType } from "@/components/types";
+import { PostType } from "@/components/types";
 import PostActions from "@/components/PostActions";
-import commentsData from "@/mock/comments.json";
+// import commentsData from "@/mock/comments.json";
 import PostHeader from "./components/PostHeader";
 import PostImage from "./components/PostImage";
-import PostComments from "./components/PostComments";
+// import PostComments from "./components/PostComments";
 import { useRouter } from "next/navigation";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import Link from "next/link";
+import CommentList from "@/app/comment/[id]/components/CommentList";
 
-export interface PostDetailProps {
-  params: { id: string };
-}
-
-const PostDetail = ({ params }: PostDetailProps) => {
+const PostDetail = ({ params }: { params: { id: string } }) => {
   const [post, setPost] = useState<PostType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -55,7 +53,7 @@ const PostDetail = ({ params }: PostDetailProps) => {
     return () => unsubscribe();
   }, [params.id]);
 
-  const [comments] = useState<CommentType[]>(commentsData);
+  // const [comments] = useState<CommentType[]>(commentsData);
 
   const updatePost = async () => {
     if (!post) return;
@@ -90,7 +88,7 @@ const PostDetail = ({ params }: PostDetailProps) => {
     return <div>Post not found</div>;
   }
 
-  const postComments = comments.filter(comment => comment.postId === parseInt(params.id));
+  // const postComments = comments.filter(comment => comment.postId === parseInt(params.id));
 
   return (
     <div className="flex flex-col gap-4 max-w-4xl mx-auto">
@@ -139,7 +137,10 @@ const PostDetail = ({ params }: PostDetailProps) => {
       </div>
 
       <div className="bg-white shadow-md rounded-lg">
-        <PostComments comments={postComments} />
+        <Link href={`/comment/${post.id}`} key={post.id}>
+          <CommentList postId={params.id} />
+          {/* <PostComments comments={postComments} /> */}
+        </Link>
       </div>
     </div>
   );

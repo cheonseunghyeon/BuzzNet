@@ -1,10 +1,10 @@
-import BookPage, { PostDetailProps } from "@/app/post/[id]/page";
+import PostPage from "@/app/post/[id]/page";
 import Modal from "@/components/ui/modal/modal";
 
-export default function Page({ params }: PostDetailProps) {
+export default function Page({ params }: { params: { id: string } }) {
   return (
     <Modal>
-      <BookPage params={params} />
+      <PostPage params={params} />
     </Modal>
   );
 }
