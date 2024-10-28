@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       bio: null,
+      imageUrl: "",
       createdAt: new Date(),
     });
 

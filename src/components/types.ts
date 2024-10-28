@@ -13,6 +13,7 @@ export interface PostType {
   author: {
     displayName: string;
     uid: string;
+    userimageUrl?: string;
   };
   content: string;
   createdAt: Date;

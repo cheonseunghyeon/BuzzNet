@@ -41,6 +41,7 @@ const PostCreateForm: React.FC = () => {
         author: {
           uid: user.uid,
           displayName: user.name || "Anonymous",
+          userimageUrl: user.imageUrl,
         },
         likes: 0,
         comments: 0,

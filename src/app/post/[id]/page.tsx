@@ -34,6 +34,7 @@ const PostDetail = ({ params }: PostDetailProps) => {
           author: {
             displayName: data.author.displayName,
             uid: data.author.uid,
+            userimageUrl: data.author.userimageUrl,
           },
           content: data.content,
           createdAt: data.createdAt.toDate(),
