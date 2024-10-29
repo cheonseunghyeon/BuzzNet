@@ -1,8 +1,6 @@
-// components/CommentList.tsx
-
 "use client";
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
+import { collection, query, orderBy, Timestamp, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/init";
 
 interface Comment {
@@ -24,33 +22,28 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const commentsRef = collection(db, "posts", postId, "comments");
-        const q = query(commentsRef, orderBy("createdAt", "asc"));
-        const querySnapshot = await getDocs(q);
+    const commentsRef = collection(db, "posts", postId, "comments");
+    const q = query(commentsRef, orderBy("createdAt", "asc"));
 
-        const fetchedComments = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            content: data.content,
-            createdAt: (data.createdAt as Timestamp).toDate(),
-            author: {
-              uid: data.author.uid,
-              displayName: data.author.displayName,
-              userImageUrl: data.author.userImageUrl,
-            },
-          } as Comment;
-        });
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      const fetchedComments = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          content: data.content,
+          createdAt: (data.createdAt as Timestamp).toDate(),
+          author: {
+            uid: data.author.uid,
+            displayName: data.author.displayName,
+            userImageUrl: data.author.userImageUrl,
+          },
+        } as Comment;
+      });
 
-        setComments(fetchedComments);
-      } catch (error) {
-        console.error("댓글 가져오기 오류:", error);
-      }
-    };
+      setComments(fetchedComments);
+    });
 
-    fetchComments();
+    return () => unsubscribe();
   }, [postId]);
 
   return (
