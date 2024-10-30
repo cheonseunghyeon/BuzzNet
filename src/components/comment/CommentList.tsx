@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { collection, query, orderBy, Timestamp, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, Timestamp, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
 
 interface Comment {
@@ -45,6 +45,15 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
 
     return () => unsubscribe();
   }, [postId]);
+  const handleDeleteComment = async (commentId: string) => {
+    const commentRef = doc(db, "posts", postId, "comments", commentId);
+    try {
+      await deleteDoc(commentRef);
+      setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+    } catch (error) {
+      console.error("댓글 삭제 중 오류:", error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -61,7 +70,15 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
               <div className="font-semibold text-gray-800">{comment.author.displayName}</div>
               <div className="text-gray-500 text-xs">{comment.createdAt.toLocaleString()}</div>
             </div>
-            <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+              <button
+                onClick={() => handleDeleteComment(comment.id)}
+                className="text-red-500 text-xs ml-4 hover:underline"
+              >
+                삭제
+              </button>
+            </div>
           </div>
         </div>
       ))}
