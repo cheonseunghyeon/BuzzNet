@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PostType } from "../../components/types";
-import Post from "@/components/PostItem";
+import Post from "@/components/post/PostItem";
 import Link from "next/link";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "@/firebase/init";

@@ -1,12 +1,8 @@
-// pages/comment/[id]/page.tsx
-
 "use client";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase/init";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import CommentList from "./components/CommentList";
+import CommentList from "@/components/comment/CommentList";
 
 const CommentPage = () => {
   const { id: postId } = useParams();
@@ -15,7 +11,6 @@ const CommentPage = () => {
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore(state => state.user);
 
-  // 댓글 추가하기
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -28,20 +23,26 @@ const CommentPage = () => {
     }
 
     try {
-      const newCommentData = {
-        content: newComment,
-        createdAt: new Date(),
-        author: {
-          uid: user.uid,
-          displayName: user.name || "Anonymous",
-          userImageUrl: user.imageUrl || "/default-profile.png",
+      const response = await fetch(`/api/comment/create/${postId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      };
+        body: JSON.stringify({
+          content: newComment,
+          uid: user.uid,
+          displayName: user.name,
+          userImageUrl: user.imageUrl,
+        }),
+      });
 
-      await addDoc(collection(db, "posts", postId as string, "comments"), newCommentData);
+      if (!response.ok) {
+        throw new Error("댓글 작성 중 오류가 발생했습니다.");
+      }
+
       setNewComment("");
     } catch (err) {
-      console.error("댓글 작성 중 오류:", err);
+      console.error(err);
       setError("댓글 작성 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);

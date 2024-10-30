@@ -1,6 +1,6 @@
 import React from "react";
-import { LoginForm } from "../components/LoginForm";
 import Link from "next/link";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 const LoginPage = () => {
   return (

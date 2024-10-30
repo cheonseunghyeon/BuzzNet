@@ -1,6 +1,6 @@
 import React from "react";
-import { PostType } from "./types";
 import PostActions from "./PostActions";
+import { PostType } from "../types";
 
 const Post = ({ post }: { post: PostType }) => {
   const { author, createdAt, content, imageUrl, likes, comments, shares } = post;

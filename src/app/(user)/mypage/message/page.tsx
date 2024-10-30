@@ -1,5 +1,5 @@
+import MessageList from "@/components/user/List/MessageList";
 import React from "react";
-import MessageList from "../../components/List/MessageList";
 
 const Messages = () => {
   return <MessageList />;

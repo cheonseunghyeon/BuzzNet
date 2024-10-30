@@ -4,15 +4,13 @@ import React, { useEffect, useState } from "react";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { PostType } from "@/components/types";
-import PostActions from "@/components/PostActions";
-// import commentsData from "@/mock/comments.json";
-import PostHeader from "./components/PostHeader";
-import PostImage from "./components/PostImage";
-// import PostComments from "./components/PostComments";
+import PostActions from "@/components/post/PostActions";
 import { useRouter } from "next/navigation";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
-import CommentList from "@/app/comment/[id]/components/CommentList";
+import PostHeader from "@/components/post/PostHeader";
+import PostImage from "@/components/post/PostImage";
+import CommentList from "@/components/comment/CommentList";
 
 const PostDetail = ({ params }: { params: { id: string } }) => {
   const [post, setPost] = useState<PostType | null>(null);
@@ -52,8 +50,6 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     // 컴포넌트 언마운트 시 구독 해제
     return () => unsubscribe();
   }, [params.id]);
-
-  // const [comments] = useState<CommentType[]>(commentsData);
 
   const updatePost = async () => {
     if (!post) return;

@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import users from "@/mock/user.json";
-import { UserType } from "../../../../../components/types";
-import SelectedUser from "../../../components/SelectedUser";
-import UserList from "../../../components/List/UserList";
+import { UserType } from "@/components/types";
+import SelectedUser from "@/components/user/SelectedUser";
+import UserList from "@/components/user/List/UserList";
 import Link from "next/link";
 
 const Following = () => {
