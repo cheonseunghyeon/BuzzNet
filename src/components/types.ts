@@ -43,3 +43,21 @@ export interface UserType {
 export interface CloseButtonProps {
   onClick: () => void;
 }
+
+export interface SignupFormData {
+  email: string;
+  name: string;
+  password: string;
+  confirmpassword: string;
+}
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface FormInputProps {
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
