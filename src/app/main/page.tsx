@@ -1,35 +1,40 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { PostType } from "../../components/types";
-import Post from "@/components/post/PostItem";
+import React, { useRef, useEffect } from "react";
 import Link from "next/link";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { db } from "@/firebase/init";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import Post from "@/components/post/PostItem";
+import { fetchPosts } from "@/lib/post/hooks/fetchPosts";
 import { FaPaperPlane, FaRegImage } from "react-icons/fa";
 
 const Home = () => {
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    initialPageParam: null,
+    getNextPageParam: lastPage => {
+      return lastPage.hasMore ? lastPage.nextCursor : undefined;
+    },
+  });
 
   useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    if (!hasNextPage || isFetchingNextPage) return;
 
-    const unsubscribe = onSnapshot(q, snapshot => {
-      const postsData = snapshot.docs.map(
-        doc =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt.toDate(),
-          } as PostType),
-      );
-      setPosts(postsData);
-      setLoading(false);
-    });
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
+    );
 
-    return () => unsubscribe();
-  }, []);
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="max-w-6xl mx-auto pt-4">
@@ -50,15 +55,16 @@ const Home = () => {
         </Link>
       </div>
 
-      {loading ? (
-        <div className="text-center text-gray-500">로딩 중...</div>
-      ) : (
-        posts.map(post => (
-          <Link href={`/post/${post.id}`} key={post.id}>
-            <Post post={post} />
-          </Link>
-        ))
-      )}
+      {data?.pages.map((page, index) => (
+        <React.Fragment key={index}>
+          {page.posts.map(post => (
+            <Link href={`/post/${post.id}`} key={post.id}>
+              <Post post={post} />
+            </Link>
+          ))}
+        </React.Fragment>
+      ))}
+      <div ref={observerRef}>{isFetchingNextPage && <p>로딩 중...</p>}</div>
     </div>
   );
 };
