@@ -1,5 +1,5 @@
 import React from "react";
-import CommentItem from "@/components/CommentItem";
+import CommentItem from "@/components/commons/CommentItem";
 import { CommentType } from "@/components/types";
 
 interface PostCommentsProps {

@@ -1,22 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/init";
-import { CommentType, PostType } from "@/components/types";
-import PostActions from "@/components/PostActions";
-import commentsData from "@/mock/comments.json";
-import PostHeader from "./components/PostHeader";
-import PostImage from "./components/PostImage";
-import PostComments from "./components/PostComments";
+import { PostType } from "@/components/types";
+import PostActions from "@/components/post/PostActions";
 import { useRouter } from "next/navigation";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import Link from "next/link";
+import PostHeader from "@/components/post/PostHeader";
+import PostImage from "@/components/post/PostImage";
+import CommentList from "@/components/comment/CommentList";
 
-export interface PostDetailProps {
-  params: { id: string };
-}
-
-const PostDetail = ({ params }: PostDetailProps) => {
+const PostDetail = ({ params }: { params: { id: string } }) => {
   const [post, setPost] = useState<PostType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -46,25 +42,32 @@ const PostDetail = ({ params }: PostDetailProps) => {
         setEditContent(data.content);
       } else {
         console.error("No such post!");
-        setPost(null); // 데이터가 없을 경우 post를 null로 설정
+        setPost(null);
       }
       setLoading(false);
     });
 
-    // 컴포넌트 언마운트 시 구독 해제
     return () => unsubscribe();
   }, [params.id]);
-
-  const [comments] = useState<CommentType[]>(commentsData);
 
   const updatePost = async () => {
     if (!post) return;
 
     try {
-      const postRef = doc(db, "posts", post.id);
-      await updateDoc(postRef, { content: editContent });
-      setIsEditing(false);
-      setIsMenuOpen(false);
+      const response = await fetch(`/api/post/${post.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: editContent }),
+      });
+
+      if (response.ok) {
+        setIsEditing(false);
+        setIsMenuOpen(false);
+      } else {
+        console.error("Error updating post:", await response.json());
+      }
     } catch (error) {
       console.error("Error updating post: ", error);
     }
@@ -74,14 +77,19 @@ const PostDetail = ({ params }: PostDetailProps) => {
     if (!post) return;
 
     try {
-      const postRef = doc(db, "posts", post.id);
-      await deleteDoc(postRef);
-      router.back();
+      const response = await fetch(`/api/post/${post.id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        router.back();
+      } else {
+        console.error("Error deleting post:", await response.json());
+      }
     } catch (error) {
       console.error("Error deleting post: ", error);
     }
   };
-
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -90,7 +98,7 @@ const PostDetail = ({ params }: PostDetailProps) => {
     return <div>Post not found</div>;
   }
 
-  const postComments = comments.filter(comment => comment.postId === parseInt(params.id));
+  // const postComments = comments.filter(comment => comment.postId === parseInt(params.id));
 
   return (
     <div className="flex flex-col gap-4 max-w-4xl mx-auto">
@@ -139,7 +147,10 @@ const PostDetail = ({ params }: PostDetailProps) => {
       </div>
 
       <div className="bg-white shadow-md rounded-lg">
-        <PostComments comments={postComments} />
+        <Link href={`/comment/${post.id}`} key={post.id}>
+          <CommentList postId={params.id} limit={2} />
+          {/* <PostComments comments={postComments} /> */}
+        </Link>
       </div>
     </div>
   );

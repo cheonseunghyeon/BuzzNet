@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import users from "@/mock/user.json";
 import { UserType } from "../../../../../components/types";
-import SelectedUser from "../../../components/SelectedUser";
-import UserList from "../../../components/List/UserList";
 import Link from "next/link";
+import SelectedUser from "@/components/user/SelectedUser";
+import UserList from "@/components/user/List/UserList";
 
 const Follower = () => {
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);

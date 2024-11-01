@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/firebase/init";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useImageUpload } from "@/lib/post/hooks/useImageUpload";
 import { usePostForm } from "@/lib/post/hooks/usePostForm";
@@ -16,6 +14,7 @@ const PostCreateForm: React.FC = () => {
 
   const router = useRouter();
   const { uploadImage } = useImageUpload();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -34,27 +33,34 @@ const PostCreateForm: React.FC = () => {
         return;
       }
 
-      const postRef = await addDoc(collection(db, "posts"), {
-        content,
-        imageUrl,
-        createdAt: new Date(),
-        author: {
-          uid: user.uid,
-          displayName: user.name || "Anonymous",
-          userimageUrl: user.imageUrl,
+      const response = await fetch(`/api/post/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        likes: 0,
-        comments: 0,
-        shares: 0,
+        body: JSON.stringify({
+          content,
+          imageUrl,
+          author: {
+            uid: user.uid,
+            displayName: user.name || "Anonymous",
+            userImageUrl: user.imageUrl,
+          },
+        }),
       });
 
-      console.log(postRef);
-      setContent("");
-      setImage(null);
-
-      router.back();
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Post created:", data);
+        setContent("");
+        setImage(null);
+        router.back();
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "게시물 생성 중 오류가 발생했습니다.");
+      }
     } catch (err) {
-      console.error("Error creating post: ", err);
+      console.error("Error creating post:", err);
       setError("게시물 생성 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
@@ -99,6 +105,10 @@ const PostCreateForm: React.FC = () => {
               placeholder="내용을 입력하세요"
               value={content}
               onChange={e => setContent(e.target.value)}
+              onInput={e => {
+                e.currentTarget.style.height = "auto";
+                e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+              }}
               required
               className="w-full p-2 border border-white rounded-lg resize-none outline-none"
             />

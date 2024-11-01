@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import { PostType } from "../../../components/types";
 import Link from "next/link";
-import Post from "@/components/PostItem";
 import { fetchPosts } from "@/lib/fetchPosts";
+import Post from "@/components/post/PostItem";
 
 const Profile = () => {
   const [posts, setPosts] = useState<PostType[]>([]);

@@ -1,11 +1,5 @@
 import React from "react";
-
-interface FormInputProps {
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+import { FormInputProps } from "../types";
 
 const FormInput: React.FC<FormInputProps> = ({ type, placeholder, value, onChange }) => {
   return (

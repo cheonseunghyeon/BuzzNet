@@ -2,9 +2,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useRegisterUser } from "@/lib/auth/hooks/useRegisterUser";
-import { SignupFormData } from "../type";
 import { useToastStore } from "@/store/toast/useToastStore";
 import Toast from "@/components/ui/Toast";
+import { SignupFormData } from "../types";
 
 export const SignupForm = () => {
   const showToast = useToastStore(state => state.showToast);

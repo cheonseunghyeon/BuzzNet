@@ -1,4 +1,4 @@
-import NotificationList from "../../components/List/NotificationList";
+import NotificationList from "@/components/user/List/NotificationList";
 
 const Notifications = () => {
   return <NotificationList />;

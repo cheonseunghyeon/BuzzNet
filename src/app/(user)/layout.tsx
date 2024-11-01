@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import loginuser from "@/mock/user.json";
 import { UserType } from "../../components/types";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "@/components/user/Sidebar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [user] = useState<UserType[]>(loginuser);
