@@ -1,4 +1,4 @@
-import { CloseButtonProps } from "./types";
+import { CloseButtonProps } from "../types";
 
 export default function CloseButton({ onClick }: CloseButtonProps) {
   return (

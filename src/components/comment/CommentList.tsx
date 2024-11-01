@@ -2,21 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, query, orderBy, Timestamp, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
-
-interface Comment {
-  id: string;
-  content: string;
-  createdAt: Date;
-  author: {
-    uid: string;
-    displayName: string;
-    userImageUrl: string;
-  };
-}
-
-interface CommentListProps {
-  postId: string;
-}
+import { Comment, CommentListProps } from "../types";
 
 const CommentList: React.FC<CommentListProps> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);

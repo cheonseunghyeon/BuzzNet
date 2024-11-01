@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/firebase/init";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 
-// 게시물 업데이트 핸들러
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params; // 여기서 id를 가져옵니다.
+  const { id } = params;
   const { content } = await request.json();
 
   try {
@@ -18,9 +17,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-// 게시물 삭제 핸들러
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params; // 여기도 동일하게 id를 사용합니다.
+  const { id } = params;
 
   try {
     const postRef = doc(db, "posts", id);

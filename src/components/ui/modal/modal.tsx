@@ -4,7 +4,7 @@ import { ReactNode, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useModalAnimation } from "./useModalAnimation";
-import CloseButton from "@/components/CloseButton";
+import CloseButton from "@/components/commons/CloseButton";
 
 export default function Modal({ children }: { children: ReactNode }) {
   const modalRef = useRef<HTMLDivElement>(null);

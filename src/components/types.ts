@@ -61,3 +61,18 @@ export interface FormInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export interface Comment {
+  id: string;
+  content: string;
+  createdAt: Date;
+  author: {
+    uid: string;
+    displayName: string;
+    userImageUrl: string;
+  };
+}
+
+export interface CommentListProps {
+  postId: string;
+}
