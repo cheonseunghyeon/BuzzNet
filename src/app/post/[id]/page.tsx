@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { PostType } from "@/components/types";
 import PostActions from "@/components/post/PostActions";
@@ -42,12 +42,11 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
         setEditContent(data.content);
       } else {
         console.error("No such post!");
-        setPost(null); // 데이터가 없을 경우 post를 null로 설정
+        setPost(null);
       }
       setLoading(false);
     });
 
-    // 컴포넌트 언마운트 시 구독 해제
     return () => unsubscribe();
   }, [params.id]);
 
@@ -55,10 +54,20 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     if (!post) return;
 
     try {
-      const postRef = doc(db, "posts", post.id);
-      await updateDoc(postRef, { content: editContent });
-      setIsEditing(false);
-      setIsMenuOpen(false);
+      const response = await fetch(`/api/post/${post.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: editContent }),
+      });
+
+      if (response.ok) {
+        setIsEditing(false);
+        setIsMenuOpen(false);
+      } else {
+        console.error("Error updating post:", await response.json());
+      }
     } catch (error) {
       console.error("Error updating post: ", error);
     }
@@ -68,14 +77,19 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     if (!post) return;
 
     try {
-      const postRef = doc(db, "posts", post.id);
-      await deleteDoc(postRef);
-      router.back();
+      const response = await fetch(`/api/post/${post.id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        router.back();
+      } else {
+        console.error("Error deleting post:", await response.json());
+      }
     } catch (error) {
       console.error("Error deleting post: ", error);
     }
   };
-
   if (loading) {
     return <div>로딩 중...</div>;
   }
