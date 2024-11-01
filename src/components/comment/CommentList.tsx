@@ -1,15 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { collection, query, orderBy, Timestamp, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  orderBy,
+  limit as firestoreLimit,
+  Timestamp,
+  onSnapshot,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { Comment, CommentListProps } from "../types";
 
-const CommentList: React.FC<CommentListProps> = ({ postId }) => {
+const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     const commentsRef = collection(db, "posts", postId, "comments");
-    const q = query(commentsRef, orderBy("createdAt", "asc"));
+    const q = limit
+      ? query(commentsRef, orderBy("createdAt", "asc"), firestoreLimit(limit))
+      : query(commentsRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, querySnapshot => {
       const fetchedComments = querySnapshot.docs.map(doc => {
@@ -30,7 +41,8 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
     });
 
     return () => unsubscribe();
-  }, [postId]);
+  }, [postId, limit]);
+
   const handleDeleteComment = async (commentId: string) => {
     const commentRef = doc(db, "posts", postId, "comments", commentId);
     try {
@@ -46,7 +58,6 @@ const CommentList: React.FC<CommentListProps> = ({ postId }) => {
       {comments.map(comment => (
         <div key={comment.id} className="flex items-start space-x-4  p-4 rounded-lg shadow-sm">
           {comment.author.userImageUrl ? (
-            // <img src={comment.author.userImageUrl} alt="Post" className="w-14 h-14 rounded-full" />
             <div className="w-14 h-14 bg-gray-300 rounded-full" />
           ) : (
             <div className="w-14 h-14 bg-gray-300 rounded-full" />

@@ -75,4 +75,5 @@ export interface Comment {
 
 export interface CommentListProps {
   postId: string;
+  limit?: number;
 }

@@ -148,7 +148,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
 
       <div className="bg-white shadow-md rounded-lg">
         <Link href={`/comment/${post.id}`} key={post.id}>
-          <CommentList postId={params.id} />
+          <CommentList postId={params.id} limit={2} />
           {/* <PostComments comments={postComments} /> */}
         </Link>
       </div>
