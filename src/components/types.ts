@@ -18,7 +18,7 @@ export interface PostType {
   content: string;
   createdAt: Date;
   imageUrl: string;
-  likes: number;
+  likes: string[];
   comments: number;
   shares: number;
 }
@@ -79,7 +79,10 @@ export interface CommentListProps {
 }
 
 export interface PostActionsProps {
-  likes: number;
+  postId?: string;
+  userId?: string;
+  initialLikes?: string[];
+  likes?: number;
   comments: number;
   shares: number;
 }

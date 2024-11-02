@@ -21,6 +21,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [uid, setUid] = useState("");
   const user = useAuthStore(state => state.user);
+  const userId = user?.uid;
   const router = useRouter();
   useEffect(() => {
     const postRef = doc(db, "posts", params.id);
@@ -134,8 +135,13 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
 
         <p className="mt-1 mb-8">{post.content}</p>
         <PostImage postImage={post.imageUrl} />
-        <PostActions likes={post.likes} comments={post.comments} shares={post.shares} />
-
+        <PostActions
+          postId={post.id}
+          userId={userId}
+          initialLikes={post.likes}
+          comments={post.comments}
+          shares={post.shares}
+        />
         {isEditing && (
           <div className="mt-4">
             <textarea

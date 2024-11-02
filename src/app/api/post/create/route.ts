@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       imageUrl,
       createdAt: Timestamp.fromDate(new Date()),
       author,
-      likes: 0,
+      likes: [],
       comments: 0,
       shares: 0,
     });
