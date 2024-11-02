@@ -1,11 +1,6 @@
 import React from "react";
 import { FaHeart, FaComment, FaAngleUp } from "react-icons/fa";
-
-interface PostActionsProps {
-  likes: number;
-  comments: number;
-  shares: number;
-}
+import { PostActionsProps } from "../types";
 
 const PostActions = ({ likes, comments, shares }: PostActionsProps) => {
   return (

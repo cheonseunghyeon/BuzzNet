@@ -77,3 +77,9 @@ export interface CommentListProps {
   postId: string;
   limit?: number;
 }
+
+export interface PostActionsProps {
+  likes: number;
+  comments: number;
+  shares: number;
+}

@@ -12,9 +12,12 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { Comment, CommentListProps } from "../types";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [uid, setUid] = useState("");
+  const user = useAuthStore(state => state.user);
 
   useEffect(() => {
     const commentsRef = collection(db, "posts", postId, "comments");
@@ -25,6 +28,7 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
     const unsubscribe = onSnapshot(q, querySnapshot => {
       const fetchedComments = querySnapshot.docs.map(doc => {
         const data = doc.data();
+        setUid(data.author.uid);
         return {
           id: doc.id,
           content: data.content,
@@ -69,12 +73,14 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
             </div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-gray-700 leading-relaxed">{comment.content}</p>
-              <button
-                onClick={() => handleDeleteComment(comment.id)}
-                className="text-red-500 text-xs ml-4 hover:underline"
-              >
-                삭제
-              </button>
+              {uid == user?.uid && (
+                <button
+                  onClick={() => handleDeleteComment(comment.id)}
+                  className="text-red-500 text-xs ml-4 hover:underline"
+                >
+                  삭제
+                </button>
+              )}
             </div>
           </div>
         </div>
