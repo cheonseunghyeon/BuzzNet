@@ -11,6 +11,7 @@ import Link from "next/link";
 import PostHeader from "@/components/post/PostHeader";
 import PostImage from "@/components/post/PostImage";
 import CommentList from "@/components/comment/CommentList";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const PostDetail = ({ params }: { params: { id: string } }) => {
   const [post, setPost] = useState<PostType | null>(null);
@@ -18,13 +19,15 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [uid, setUid] = useState("");
+  const user = useAuthStore(state => state.user);
   const router = useRouter();
-
   useEffect(() => {
     const postRef = doc(db, "posts", params.id);
     const unsubscribe = onSnapshot(postRef, postSnap => {
       if (postSnap.exists()) {
         const data = postSnap.data();
+        setUid(data.author.uid);
         setPost({
           id: postSnap.id,
           author: {
@@ -105,11 +108,12 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
       <div className="bg-white shadow-md rounded-lg p-4 relative">
         <div className="flex justify-between items-center">
           <PostHeader post={post} />
-
-          <BsThreeDotsVertical
-            onClick={() => setIsMenuOpen(prev => !prev)}
-            className="text-2xl cursor-pointer text-gray-500"
-          />
+          {uid == user?.uid && (
+            <BsThreeDotsVertical
+              onClick={() => setIsMenuOpen(prev => !prev)}
+              className="text-2xl cursor-pointer text-gray-500"
+            />
+          )}
 
           <div
             className={`absolute top-10 right-8 bg-white border border-gray-300 shadow-md rounded-lg p-2 flex flex-col gap-1 transition-all duration-300 ease-in-out transform ${
