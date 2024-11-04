@@ -1,18 +1,9 @@
-import {
-  query,
-  collection,
-  orderBy,
-  limit,
-  startAfter,
-  getDocs,
-  DocumentData,
-  QueryDocumentSnapshot,
-  Timestamp,
-} from "firebase/firestore";
+import { query, collection, orderBy, limit, startAfter, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { PostType } from "@/components/types";
 
-export const fetchPosts = async ({ pageParam = null }: { pageParam?: QueryDocumentSnapshot<DocumentData> | null }) => {
+// fetchPosts.ts에서
+export const fetchPosts = async ({ pageParam = null }: { pageParam?: string | null }) => {
   const postsQuery = pageParam
     ? query(collection(db, "posts"), orderBy("createdAt", "desc"), startAfter(pageParam), limit(5))
     : query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(5));
@@ -32,6 +23,7 @@ export const fetchPosts = async ({ pageParam = null }: { pageParam?: QueryDocume
     };
   });
 
-  const lastVisible = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1] : null;
+  // lastVisible에 문서 ID를 사용
+  const lastVisible = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1].id : null;
   return { posts, nextCursor: lastVisible, hasMore: snapshot.docs.length === 5 };
 };
