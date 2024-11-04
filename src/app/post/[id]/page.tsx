@@ -26,17 +26,24 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/post/${params.id}`);
-        const data = await response.json();
+        const response = await fetch(`/api/post/${params.id}`, {
+          method: "GET",
+        });
 
-        if (response.ok) {
-          setPost(data);
-          setUid(data.author.uid);
-          setEditContent(data.content);
-        } else {
-          console.error("No such post!", data.error);
+        if (response.status === 404) {
+          console.error("No such post found!");
           setPost(null);
+          return;
         }
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch post data");
+        }
+
+        const data = await response.json();
+        setPost(data);
+        setUid(data.author.uid);
+        setEditContent(data.content);
       } catch (error) {
         console.error("Error fetching post:", error);
         setPost(null);

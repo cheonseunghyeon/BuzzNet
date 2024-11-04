@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/firebase/init";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
@@ -28,5 +28,32 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   } catch (error) {
     console.error("게시물 삭제 오류:", error);
     return NextResponse.json({ message: "게시물 삭제 오류" }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
+  try {
+    const postRef = doc(db, "posts", id);
+    const postSnap = await getDoc(postRef);
+
+    if (!postSnap.exists()) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    const data = postSnap.data();
+    return NextResponse.json({
+      id: postSnap.id,
+      author: data.author,
+      content: data.content,
+      createdAt: data.createdAt.toDate(),
+      imageUrl: data.imageUrl,
+      likes: data.likes,
+      comments: data.comments,
+      shares: data.shares,
+    });
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    return NextResponse.json({ error: "Failed to fetch post data" }, { status: 500 });
   }
 }

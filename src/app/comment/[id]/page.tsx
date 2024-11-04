@@ -54,7 +54,7 @@ const CommentPage = () => {
       <div className="bg-white shadow rounded-lg p-4">
         <h2 className="text-2xl font-bold mb-4">댓글 리스트</h2>
 
-        <CommentList postId={postId as string} />
+        <CommentList postId={postId as string} limit={100} />
         <form onSubmit={handleAddComment} className="flex flex-col gap-2 mt-4">
           <textarea
             value={newComment}

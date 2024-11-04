@@ -1,16 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  collection,
-  query,
-  orderBy,
-  limit as firestoreLimit,
-  Timestamp,
-  doc,
-  deleteDoc,
-  getDocs,
-} from "firebase/firestore";
-import { db } from "@/firebase/init";
 import { Comment, CommentListProps } from "../types";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 
@@ -21,29 +10,15 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const commentsRef = collection(db, "posts", postId, "comments");
-      const q = limit
-        ? query(commentsRef, orderBy("createdAt", "asc"), firestoreLimit(limit))
-        : query(commentsRef, orderBy("createdAt", "asc"));
-
       try {
-        const querySnapshot = await getDocs(q);
-        const fetchedComments = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          setUid(data.author.uid);
-          return {
-            id: doc.id,
-            content: data.content,
-            createdAt: (data.createdAt as Timestamp).toDate(),
-            author: {
-              uid: data.author.uid,
-              displayName: data.author.displayName,
-              userImageUrl: data.author.userImageUrl,
-            },
-          } as Comment;
-        });
+        const response = await fetch(`/api/post/${postId}/comment?limit=${limit}`);
+        if (!response.ok) throw new Error("Failed to fetch comments");
 
-        setComments(fetchedComments);
+        const data = await response.json();
+        setComments(data);
+        if (data.length > 0) {
+          setUid(data[0].author.uid);
+        }
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
@@ -52,11 +27,15 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
     fetchComments();
   }, [postId, limit]);
 
-  const handleDeleteComment = async (commentId: string) => {
-    const commentRef = doc(db, "posts", postId, "comments", commentId);
+  const handleDeleteComment = async (commentid: string) => {
     try {
-      await deleteDoc(commentRef);
-      setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+      const response = await fetch(`/api/post/${postId}/comment/${commentid}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete comment");
+
+      setComments(prevComments => prevComments.filter(comment => comment.id !== commentid));
     } catch (error) {
       console.error("댓글 삭제 중 오류:", error);
     }
