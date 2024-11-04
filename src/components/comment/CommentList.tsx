@@ -4,6 +4,7 @@ import { Comment, CommentListProps } from "../types";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useDeleteComment } from "@/lib/comment/hooks/useDeleteComment";
 import { useComments } from "@/lib/comment/hooks/useComments";
+import CommentSkeleton from "../Skeleton/CommentSkeleton";
 
 const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
   const { data: comments = [], isLoading, isError } = useComments(postId, limit ?? 10);
@@ -14,7 +15,7 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
     deleteComment({ commentId });
   };
 
-  if (isLoading) return <p>Loading comments...</p>;
+  if (isLoading) return <CommentSkeleton />;
   if (isError) return <p>Error loading comments.</p>;
 
   return (
