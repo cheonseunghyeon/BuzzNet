@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { addComment } from "../api";
+import { addComment } from "../commentAPI";
 import { AddCommentParams } from "../types";
 import { useToastStore } from "@/store/toast/useToastStore";
 import { useRouter } from "next/navigation";

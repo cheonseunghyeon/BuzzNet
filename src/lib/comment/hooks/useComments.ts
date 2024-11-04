@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchComments } from "../api";
+import { fetchComments } from "../commentAPI";
 
 export function useComments(postId: string, limit: number) {
   return useQuery({

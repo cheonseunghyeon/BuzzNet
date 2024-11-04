@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { PostType } from "@/components/types";
+import React, { useState } from "react";
 import PostActions from "@/components/post/PostActions";
 import { useRouter } from "next/navigation";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -10,107 +9,45 @@ import PostHeader from "@/components/post/PostHeader";
 import PostImage from "@/components/post/PostImage";
 import CommentList from "@/components/comment/CommentList";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { usePost } from "@/lib/post/hooks/usePost";
+import { useDeletePost } from "@/lib/post/hooks/useDeletePost";
+import { useUpdatePost } from "@/lib/post/hooks/useUpdatePost";
+import PostSkeleton from "@/components/Skeleton/PostSkeleton";
 
 const PostDetail = ({ params }: { params: { id: string } }) => {
-  const [post, setPost] = useState<PostType | null>(null);
-  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [uid, setUid] = useState("");
   const user = useAuthStore(state => state.user);
-  const userId = user?.uid;
   const router = useRouter();
+  const { data: post, isLoading, isError } = usePost(params.id);
+  const { mutate: deletePost } = useDeletePost(params.id);
+  const { mutate: updatePost } = useUpdatePost();
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/post/${params.id}`, {
-          method: "GET",
-        });
-
-        if (response.status === 404) {
-          console.error("No such post found!");
-          setPost(null);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch post data");
-        }
-
-        const data = await response.json();
-        setPost(data);
-        setUid(data.author.uid);
-        setEditContent(data.content);
-      } catch (error) {
-        console.error("Error fetching post:", error);
-        setPost(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPost();
-  }, [params.id]);
-
-  const updatePost = async () => {
-    if (!post) return;
-
-    try {
-      const response = await fetch(`/api/post/update/${post.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: editContent }),
-      });
-
-      if (response.ok) {
-        setIsEditing(false);
-        setIsMenuOpen(false);
-      } else {
-        console.error("Error updating post:", await response.json());
-      }
-    } catch (error) {
-      console.error("Error updating post: ", error);
-    }
+  const handleUpdate = () => {
+    updatePost({ postId: params.id, content: editContent });
+    setIsEditing(false);
   };
 
-  const deletePost = async () => {
-    if (!post) return;
-
-    try {
-      const response = await fetch(`/api/post/delete/${post.id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        router.back();
-      } else {
-        console.error("Error deleting post:", await response.json());
-      }
-    } catch (error) {
-      console.error("Error deleting post: ", error);
-    }
+  const handleDelete = () => {
+    deletePost();
+    router.back();
   };
-  if (loading) {
-    return <div>로딩 중...</div>;
+
+  if (isLoading) {
+    return <PostSkeleton />;
   }
 
-  if (!post) {
+  if (isError || !post) {
     return <div>Post not found</div>;
   }
-
-  // const postComments = comments.filter(comment => comment.postId === parseInt(params.id));
 
   return (
     <div className="flex flex-col gap-4 max-w-4xl mx-auto">
       <div className="bg-white shadow-md rounded-lg p-4 relative">
         <div className="flex justify-between items-center">
           <PostHeader post={post} />
-          {uid == user?.uid && (
+          {post.author.uid == user?.uid && (
             <BsThreeDotsVertical
               onClick={() => setIsMenuOpen(prev => !prev)}
               className="text-2xl cursor-pointer text-gray-500"
@@ -128,7 +65,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
             >
               {isEditing ? "취소" : "수정"}
             </button>
-            <button onClick={deletePost} className="px-4 py-2 text-left text-red-500 hover:bg-red-100 rounded-md">
+            <button onClick={handleDelete} className="px-4 py-2 text-left text-red-500 hover:bg-red-100 rounded-md">
               삭제
             </button>
           </div>
@@ -138,7 +75,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
         <PostImage postImage={post.imageUrl} />
         <PostActions
           postId={post.id}
-          userId={userId}
+          userId={user?.uid}
           initialLikes={post.likes}
           comments={post.comments}
           shares={post.shares}
@@ -150,7 +87,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
               onChange={e => setEditContent(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
             />
-            <button onClick={updatePost} className="px-4 py-2 bg-green-500 text-white rounded-md mt-2">
+            <button onClick={handleUpdate} className="px-4 py-2 bg-green-500 text-white rounded-md mt-2">
               저장
             </button>
           </div>
@@ -159,8 +96,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
 
       <div className="bg-white shadow-md rounded-lg">
         <Link href={`/comment/${post.id}`} key={post.id}>
-          <CommentList postId={params.id} limit={2} />
-          {/* <PostComments comments={postComments} /> */}
+          <CommentList postId={params.id} limit={3} />
         </Link>
       </div>
     </div>
