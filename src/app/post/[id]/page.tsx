@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/init";
 import { PostType } from "@/components/types";
 import PostActions from "@/components/post/PostActions";
 import { useRouter } from "next/navigation";
@@ -28,35 +26,23 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const postRef = doc(db, "posts", params.id);
-        const postSnap = await getDoc(postRef);
+        const response = await fetch(`/api/post/${params.id}`);
+        const data = await response.json();
 
-        if (postSnap.exists()) {
-          const data = postSnap.data();
+        if (response.ok) {
+          setPost(data);
           setUid(data.author.uid);
-          setPost({
-            id: postSnap.id,
-            author: {
-              displayName: data.author.displayName,
-              uid: data.author.uid,
-              userimageUrl: data.author.userimageUrl,
-            },
-            content: data.content,
-            createdAt: data.createdAt.toDate(),
-            imageUrl: data.imageUrl,
-            likes: data.likes,
-            comments: data.comments,
-            shares: data.shares,
-          } as PostType);
           setEditContent(data.content);
         } else {
-          console.error("No such post!");
+          console.error("No such post!", data.error);
           setPost(null);
         }
       } catch (error) {
         console.error("Error fetching post:", error);
+        setPost(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchPost();
