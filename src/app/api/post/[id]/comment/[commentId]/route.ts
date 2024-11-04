@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/firebase/init";
 import { doc, deleteDoc } from "firebase/firestore";
 
+// 댓글 삭제
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
     const url = new URL(request.url);

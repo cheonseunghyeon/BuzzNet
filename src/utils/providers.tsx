@@ -12,12 +12,10 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
             staleTime: 60 * 1000,
           },
         },
-      })
+      }),
   );
 
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
 export default Providers;
