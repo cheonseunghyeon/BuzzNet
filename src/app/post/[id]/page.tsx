@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { PostType } from "@/components/types";
 import PostActions from "@/components/post/PostActions";
@@ -23,35 +23,43 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
   const user = useAuthStore(state => state.user);
   const userId = user?.uid;
   const router = useRouter();
+
   useEffect(() => {
-    const postRef = doc(db, "posts", params.id);
-    const unsubscribe = onSnapshot(postRef, postSnap => {
-      if (postSnap.exists()) {
-        const data = postSnap.data();
-        setUid(data.author.uid);
-        setPost({
-          id: postSnap.id,
-          author: {
-            displayName: data.author.displayName,
-            uid: data.author.uid,
-            userimageUrl: data.author.userimageUrl,
-          },
-          content: data.content,
-          createdAt: data.createdAt.toDate(),
-          imageUrl: data.imageUrl,
-          likes: data.likes,
-          comments: data.comments,
-          shares: data.shares,
-        } as PostType);
-        setEditContent(data.content);
-      } else {
-        console.error("No such post!");
-        setPost(null);
+    const fetchPost = async () => {
+      setLoading(true);
+      try {
+        const postRef = doc(db, "posts", params.id);
+        const postSnap = await getDoc(postRef);
+
+        if (postSnap.exists()) {
+          const data = postSnap.data();
+          setUid(data.author.uid);
+          setPost({
+            id: postSnap.id,
+            author: {
+              displayName: data.author.displayName,
+              uid: data.author.uid,
+              userimageUrl: data.author.userimageUrl,
+            },
+            content: data.content,
+            createdAt: data.createdAt.toDate(),
+            imageUrl: data.imageUrl,
+            likes: data.likes,
+            comments: data.comments,
+            shares: data.shares,
+          } as PostType);
+          setEditContent(data.content);
+        } else {
+          console.error("No such post!");
+          setPost(null);
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
       }
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    fetchPost();
   }, [params.id]);
 
   const updatePost = async () => {

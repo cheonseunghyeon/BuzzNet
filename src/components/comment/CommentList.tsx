@@ -6,9 +6,9 @@ import {
   orderBy,
   limit as firestoreLimit,
   Timestamp,
-  onSnapshot,
   doc,
   deleteDoc,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "@/firebase/init";
 import { Comment, CommentListProps } from "../types";
@@ -20,31 +20,36 @@ const CommentList: React.FC<CommentListProps> = ({ postId, limit }) => {
   const user = useAuthStore(state => state.user);
 
   useEffect(() => {
-    const commentsRef = collection(db, "posts", postId, "comments");
-    const q = limit
-      ? query(commentsRef, orderBy("createdAt", "asc"), firestoreLimit(limit))
-      : query(commentsRef, orderBy("createdAt", "asc"));
+    const fetchComments = async () => {
+      const commentsRef = collection(db, "posts", postId, "comments");
+      const q = limit
+        ? query(commentsRef, orderBy("createdAt", "asc"), firestoreLimit(limit))
+        : query(commentsRef, orderBy("createdAt", "asc"));
 
-    const unsubscribe = onSnapshot(q, querySnapshot => {
-      const fetchedComments = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        setUid(data.author.uid);
-        return {
-          id: doc.id,
-          content: data.content,
-          createdAt: (data.createdAt as Timestamp).toDate(),
-          author: {
-            uid: data.author.uid,
-            displayName: data.author.displayName,
-            userImageUrl: data.author.userImageUrl,
-          },
-        } as Comment;
-      });
+      try {
+        const querySnapshot = await getDocs(q);
+        const fetchedComments = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          setUid(data.author.uid);
+          return {
+            id: doc.id,
+            content: data.content,
+            createdAt: (data.createdAt as Timestamp).toDate(),
+            author: {
+              uid: data.author.uid,
+              displayName: data.author.displayName,
+              userImageUrl: data.author.userImageUrl,
+            },
+          } as Comment;
+        });
 
-      setComments(fetchedComments);
-    });
+        setComments(fetchedComments);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
 
-    return () => unsubscribe();
+    fetchComments();
   }, [postId, limit]);
 
   const handleDeleteComment = async (commentId: string) => {

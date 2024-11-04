@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaHeart, FaComment, FaAngleUp } from "react-icons/fa";
 import { PostActionsProps } from "../types";
-import { doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/init";
 
 const PostActions = ({ postId, userId, initialLikes = [], comments, shares }: PostActionsProps) => {
@@ -37,15 +37,25 @@ const PostActions = ({ postId, userId, initialLikes = [], comments, shares }: Po
   useEffect(() => {
     if (!postId) return;
 
-    const postRef = doc(db, "posts", postId);
-    const unsubscribe = onSnapshot(postRef, doc => {
-      const data = doc.data();
-      const likesArray = Array.isArray(data?.likes) ? data.likes : [];
-      setLikes(likesArray.length);
-      setIsLiked(userId ? likesArray.includes(userId) : false);
-    });
+    const fetchPostLikes = async () => {
+      const postRef = doc(db, "posts", postId);
 
-    return () => unsubscribe();
+      try {
+        const docSnap = await getDoc(postRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const likesArray = Array.isArray(data?.likes) ? data.likes : [];
+          setLikes(likesArray.length);
+          setIsLiked(userId ? likesArray.includes(userId) : false);
+        } else {
+          console.error("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      }
+    };
+
+    fetchPostLikes();
   }, [postId, userId]);
 
   if (!postId) {
