@@ -58,7 +58,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     if (!post) return;
 
     try {
-      const response = await fetch(`/api/post/${post.id}`, {
+      const response = await fetch(`/api/post/update/${post.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
     if (!post) return;
 
     try {
-      const response = await fetch(`/api/post/${post.id}`, {
+      const response = await fetch(`/api/post/delete/${post.id}`, {
         method: "DELETE",
       });
 
