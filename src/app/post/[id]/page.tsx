@@ -13,6 +13,7 @@ import { usePost } from "@/lib/post/hooks/usePost";
 import { useDeletePost } from "@/lib/post/hooks/useDeletePost";
 import { useUpdatePost } from "@/lib/post/hooks/useUpdatePost";
 import PostSkeleton from "@/components/Skeleton/PostSkeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PostDetail = ({ params }: { params: { id: string } }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,15 +24,26 @@ const PostDetail = ({ params }: { params: { id: string } }) => {
   const { data: post, isLoading, isError } = usePost(params.id);
   const { mutate: deletePost } = useDeletePost(params.id);
   const { mutate: updatePost } = useUpdatePost();
-
+  const queryClient = useQueryClient();
   const handleUpdate = () => {
-    updatePost({ postId: params.id, content: editContent });
-    setIsEditing(false);
+    updatePost(
+      { postId: params.id, content: editContent },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["post", params.id] });
+          setIsEditing(false);
+        },
+      },
+    );
   };
 
   const handleDelete = () => {
-    deletePost();
-    router.back();
+    deletePost(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        router.back();
+      },
+    });
   };
 
   if (isLoading) {

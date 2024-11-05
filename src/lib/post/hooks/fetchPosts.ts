@@ -23,7 +23,6 @@ export const fetchPosts = async ({ pageParam = null }: { pageParam?: string | nu
     };
   });
 
-  // lastVisible에 문서 ID를 사용
   const lastVisible = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1].id : null;
   return { posts, nextCursor: lastVisible, hasMore: snapshot.docs.length === 5 };
 };

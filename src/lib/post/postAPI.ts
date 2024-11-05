@@ -1,3 +1,19 @@
+import { PostType } from "./types";
+
+export async function addPost(newPost: PostType): Promise<void> {
+  const response = await fetch(`/api/post/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newPost),
+  });
+
+  if (!response.ok) {
+    throw new Error("게시물 생성 중 오류가 발생했습니다.");
+  }
+}
+
 export async function getPost(postId: string) {
   const response = await fetch(`/api/post/${postId}`, {
     method: "GET",
