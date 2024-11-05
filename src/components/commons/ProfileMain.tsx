@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase/init";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 interface Author {
   name: string;
@@ -12,6 +13,64 @@ interface Author {
 const ProfileMain = ({ uid }: { uid: string }) => {
   const [author, setAuthor] = useState<Author | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const user = useAuthStore(state => state.user);
+
+  const followUser = async (followerId: string, followedId: string) => {
+    try {
+      await addDoc(collection(db, "followers"), {
+        followerId,
+        followedId,
+      });
+
+      await addDoc(collection(db, "following"), {
+        followerId,
+        followingId: followedId,
+      });
+    } catch (error) {
+      console.error("Failed to follow user:", error);
+    }
+  };
+
+  const unfollowUser = async (followerId: string, followedId: string) => {
+    try {
+      const followersQuery = query(
+        collection(db, "followers"),
+        where("followerId", "==", followerId),
+        where("followedId", "==", followedId),
+      );
+      const followersSnapshot = await getDocs(followersQuery);
+      followersSnapshot.forEach(async doc => {
+        await deleteDoc(doc.ref);
+      });
+
+      const followingQuery = query(
+        collection(db, "following"),
+        where("followerId", "==", followerId),
+        where("followingId", "==", followedId),
+      );
+      const followingSnapshot = await getDocs(followingQuery);
+      followingSnapshot.forEach(async doc => {
+        await deleteDoc(doc.ref);
+      });
+    } catch (error) {
+      console.error("Failed to unfollow user:", error);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!user || !user.uid) {
+      console.error("User not logged in");
+      return;
+    }
+
+    if (isFollowing) {
+      await unfollowUser(user.uid, uid);
+    } else {
+      await followUser(user.uid, uid);
+    }
+
+    setIsFollowing(prev => !prev);
+  };
 
   useEffect(() => {
     const fetchAuthorData = async () => {
@@ -31,19 +90,27 @@ const ProfileMain = ({ uid }: { uid: string }) => {
       }
     };
 
-    fetchAuthorData();
-  }, [uid]);
+    const checkIfFollowing = async () => {
+      if (user && user.uid && uid) {
+        const followingQuery = query(
+          collection(db, "followers"),
+          where("followerId", "==", user.uid),
+          where("followedId", "==", uid),
+        );
 
-  const handleFollow = () => {
-    setIsFollowing(prev => !prev);
-    // 팔로우/언팔로우 로직 추가 필요 시 여기에서 처리
-  };
+        const followingSnapshot = await getDocs(followingQuery);
+        setIsFollowing(!followingSnapshot.empty);
+      }
+    };
+
+    fetchAuthorData();
+    checkIfFollowing();
+  }, [uid, user]);
 
   if (!author) return <p>Loading...</p>;
 
   return (
     <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg max-w-sm mx-auto mt-6">
-      {/* 유저 이미지 */}
       {author.imageUrl ? (
         <img
           src={author.imageUrl}
@@ -54,13 +121,10 @@ const ProfileMain = ({ uid }: { uid: string }) => {
         <div className="w-28 h-28 bg-gray-200 rounded-full shadow-md border-4 border-white -mt-14" />
       )}
 
-      {/* 유저 이름 */}
       <h1 className="text-3xl font-semibold mt-6 text-gray-800">{author.name}</h1>
 
-      {/* 유저 소개 */}
       <p className="text-gray-600 text-center mt-2 px-4">{author.bio}</p>
 
-      {/* 버튼들 */}
       <div className="flex space-x-4 mt-6">
         <button
           onClick={handleFollow}
