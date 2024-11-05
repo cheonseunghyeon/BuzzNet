@@ -1,40 +1,13 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+
+import React from "react";
 import Link from "next/link";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import Post from "@/components/post/PostItem";
-import { fetchPosts } from "@/lib/post/hooks/fetchPosts";
 import { FaPaperPlane, FaRegImage } from "react-icons/fa";
+import { useInfiniteScroll } from "@/lib/useInfiniteScroll";
 
 const Home = () => {
-  const observerRef = useRef<HTMLDivElement | null>(null);
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-    initialPageParam: null,
-    getNextPageParam: lastPage => {
-      return lastPage.hasMore ? lastPage.nextCursor : undefined;
-    },
-  });
-
-  useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 1 },
-    );
-
-    if (observerRef.current) observer.observe(observerRef.current);
-    return () => {
-      if (observerRef.current) observer.unobserve(observerRef.current);
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const { data, isFetchingNextPage, observerRef } = useInfiniteScroll();
 
   return (
     <div className="max-w-6xl mx-auto pt-4">

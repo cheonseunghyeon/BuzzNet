@@ -7,7 +7,7 @@ interface PostImageProps {
 const PostImage = ({ postImage }: PostImageProps) => {
   if (!postImage) return null;
 
-  return <img src={postImage} alt="Post Image" className="w-full h-auto rounded-lg mb-8" />;
+  return <img src={postImage} alt="Post Image" className="w-full h-auto rounded-lg mb-2" />;
 };
 
 export default PostImage;
