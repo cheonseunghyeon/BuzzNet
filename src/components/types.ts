@@ -31,13 +31,21 @@ export interface CommentType {
   likes: number;
 }
 
+// export interface UserType {
+//   id: number;
+//   name: string;
+//   profileImage: string;
+//   posts?: number;
+//   likes?: number;
+//   comments?: number;
+//   followerId?: string;
+//   followedId?: string;
+// }
 export interface UserType {
-  id: number;
+  uid: string;
   name: string;
-  profileImage: string;
-  posts: number;
-  likes: number;
-  comments: number;
+  imageUrl?: string;
+  bio?: string;
 }
 
 export interface CloseButtonProps {

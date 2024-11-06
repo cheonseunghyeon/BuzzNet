@@ -17,6 +17,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
       name: data?.name,
       imageUrl: data?.imageUrl,
       bio: data?.bio,
+      createdAt: data?.createdAt,
+      email: data?.email,
+      uid: data?.uid,
     });
   } catch (error) {
     console.error("Error fetching post:", error);
