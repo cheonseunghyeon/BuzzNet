@@ -1,113 +1,35 @@
 "use client";
-import { useEffect, useState } from "react";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/firebase/init";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-
-interface Author {
-  name: string;
-  imageUrl?: string;
-  bio?: string;
-}
+import { useFollow } from "@/lib/follow/hooks/useFollow";
+import { useUnfollow } from "@/lib/follow/hooks/useUnfollow";
+import { useUser } from "@/lib/user/hooks/useUser";
+import { useCheckIfFollow } from "@/lib/follow/hooks/useCheckIfFollow";
 
 const ProfileMain = ({ uid }: { uid: string }) => {
-  const [author, setAuthor] = useState<Author | null>(null);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const { data: author, isLoading: isAuthorLoading, isError: isAuthorError } = useUser(uid);
   const user = useAuthStore(state => state.user);
 
-  const followUser = async (followerId: string, followedId: string) => {
-    try {
-      await addDoc(collection(db, "followers"), {
-        followerId,
-        followedId,
-      });
+  const { data: isFollowing, isLoading: isFollowingLoading } = useCheckIfFollow(user?.uid ?? "", uid);
 
-      await addDoc(collection(db, "following"), {
-        followerId,
-        followingId: followedId,
-      });
-    } catch (error) {
-      console.error("Failed to follow user:", error);
-    }
-  };
+  const { mutate: follow } = useFollow();
+  const { mutate: unfollow } = useUnfollow();
 
-  const unfollowUser = async (followerId: string, followedId: string) => {
-    try {
-      const followersQuery = query(
-        collection(db, "followers"),
-        where("followerId", "==", followerId),
-        where("followedId", "==", followedId),
-      );
-      const followersSnapshot = await getDocs(followersQuery);
-      followersSnapshot.forEach(async doc => {
-        await deleteDoc(doc.ref);
-      });
-
-      const followingQuery = query(
-        collection(db, "following"),
-        where("followerId", "==", followerId),
-        where("followingId", "==", followedId),
-      );
-      const followingSnapshot = await getDocs(followingQuery);
-      followingSnapshot.forEach(async doc => {
-        await deleteDoc(doc.ref);
-      });
-    } catch (error) {
-      console.error("Failed to unfollow user:", error);
-    }
-  };
-
-  const handleFollow = async () => {
+  const handleFollow = () => {
     if (!user || !user.uid) {
       console.error("User not logged in");
       return;
     }
 
     if (isFollowing) {
-      await unfollowUser(user.uid, uid);
+      unfollow({ followerId: user.uid, followedId: uid });
     } else {
-      await followUser(user.uid, uid);
+      follow({ followerId: user.uid, followedId: uid });
     }
-
-    setIsFollowing(prev => !prev);
   };
 
-  useEffect(() => {
-    const fetchAuthorData = async () => {
-      if (uid) {
-        try {
-          const docRef = doc(db, "users", uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            setAuthor(docSnap.data() as Author);
-          } else {
-            console.log("No such user!");
-          }
-        } catch (error) {
-          console.error("Failed to fetch user data:", error);
-        }
-      }
-    };
-
-    const checkIfFollowing = async () => {
-      if (user && user.uid && uid) {
-        const followingQuery = query(
-          collection(db, "followers"),
-          where("followerId", "==", user.uid),
-          where("followedId", "==", uid),
-        );
-
-        const followingSnapshot = await getDocs(followingQuery);
-        setIsFollowing(!followingSnapshot.empty);
-      }
-    };
-
-    fetchAuthorData();
-    checkIfFollowing();
-  }, [uid, user]);
-
-  if (!author) return <p>Loading...</p>;
+  if (isAuthorLoading || isFollowingLoading) return <p>Loading...</p>;
+  if (isAuthorError) return <p>Error loading user data</p>;
+  if (!author) return <p>No user found</p>;
 
   return (
     <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg max-w-sm mx-auto mt-6">
