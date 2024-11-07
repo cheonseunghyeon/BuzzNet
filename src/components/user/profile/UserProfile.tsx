@@ -12,9 +12,8 @@ const UserProfile = ({ user }: { user: UserType }) => {
       ) : (
         <div className="w-32 h-32 rounded-full mb-4 bg-black" />
       )}
-      <div className="w-32 h-32 rounded-full mb-4 bg-black" />
+
       <h2 className="text-2xl font-semibold">{user.name}</h2>
-      <h2 className="text-2xl font-semibold">빌드 이름 수정</h2>
     </div>
   );
 };

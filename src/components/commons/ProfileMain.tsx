@@ -4,11 +4,13 @@ import { useFollow } from "@/lib/follow/hooks/useFollow";
 import { useUnfollow } from "@/lib/follow/hooks/useUnfollow";
 import { useUser } from "@/lib/user/hooks/useUser";
 import { useCheckIfFollow } from "@/lib/follow/hooks/useCheckIfFollow";
+import { useRouter } from "next/navigation";
+import { getOrCreateChatRoom } from "@/lib/chat/chatAPI";
 
 const ProfileMain = ({ uid }: { uid: string }) => {
   const { data: author, isLoading: isAuthorLoading, isError: isAuthorError } = useUser(uid);
   const user = useAuthStore(state => state.user);
-
+  const router = useRouter();
   const { data: isFollowing, isLoading: isFollowingLoading } = useCheckIfFollow(user?.uid ?? "", uid);
 
   const { mutate: follow } = useFollow();
@@ -24,6 +26,19 @@ const ProfileMain = ({ uid }: { uid: string }) => {
       unfollow({ followerId: user.uid, followedId: uid });
     } else {
       follow({ followerId: user.uid, followedId: uid });
+    }
+  };
+  const handleMessage = async () => {
+    if (!user || !user.uid) {
+      console.error("User not logged in");
+      return;
+    }
+
+    try {
+      const id = await getOrCreateChatRoom(user.uid, uid);
+      router.push(`/mypage/chat/${id}`);
+    } catch (error) {
+      console.error("Failed to start chat:", error);
     }
   };
 
@@ -56,7 +71,10 @@ const ProfileMain = ({ uid }: { uid: string }) => {
         >
           {isFollowing ? "언팔로우" : "팔로우"}
         </button>
-        <button className="px-5 py-2 font-medium rounded-lg shadow-md bg-gray-200 hover:bg-gray-300 text-gray-800">
+        <button
+          onClick={handleMessage}
+          className="px-5 py-2 font-medium rounded-lg shadow-md bg-gray-200 hover:bg-gray-300 text-gray-800"
+        >
           메시지
         </button>
       </div>
