@@ -24,7 +24,6 @@ const Following = () => {
   const [followerIds, setFollowerIds] = useState<string[]>([]);
   const user = useAuthStore(state => state.user);
 
-  //1. 팔로우 유저 uid 저장
   useEffect(() => {
     const loadFollowers = async () => {
       if (user?.uid) {
@@ -35,7 +34,6 @@ const Following = () => {
     loadFollowers();
   }, [user]);
 
-  //2. 해당하는 모든 유저의 값을 배열로 받아오기?
   const { data: followersData = [] } = useAllUser(followerIds);
 
   return (
