@@ -2,10 +2,19 @@ import { UserType } from "@/components/types";
 import React from "react";
 
 const UserProfile = ({ user }: { user: UserType }) => {
+  if (!user) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="flex flex-col items-center mb-6 mt-8">
-      <img src={user.profileImage} alt={user.name} className="w-32 h-32 rounded-full mb-4" />
+      {user.imageUrl ? (
+        <img src={user.imageUrl} alt={user.name} className="w-32 h-32 rounded-full mb-4" />
+      ) : (
+        <div className="w-32 h-32 rounded-full mb-4 bg-black" />
+      )}
+      <div className="w-32 h-32 rounded-full mb-4 bg-black" />
       <h2 className="text-2xl font-semibold">{user.name}</h2>
+      <h2 className="text-2xl font-semibold">빌드 이름 수정</h2>
     </div>
   );
 };

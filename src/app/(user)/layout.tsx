@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import loginuser from "@/mock/user.json";
-import { UserType } from "../../components/types";
+import React from "react";
 import Sidebar from "@/components/user/Sidebar";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { UserType } from "@/components/types";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [user] = useState<UserType[]>(loginuser);
+  const user = useAuthStore(state => state.user);
 
-  const loggedInUser = user[0];
+  const loggedInUser = user as UserType;
 
   return (
     <div className="flex h-screen bg-gray-100">

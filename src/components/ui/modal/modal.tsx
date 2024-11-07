@@ -6,7 +6,13 @@ import { useRouter } from "next/navigation";
 import { useModalAnimation } from "./useModalAnimation";
 import CloseButton from "@/components/commons/CloseButton";
 
-export default function Modal({ children }: { children: ReactNode }) {
+interface ModalProps {
+  children: ReactNode;
+  width?: string;
+  height?: string;
+}
+
+export default function Modal({ children, width = "max-w-[720px]", height = "h-auto" }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isVisible, handleClose } = useModalAnimation();
@@ -26,9 +32,9 @@ export default function Modal({ children }: { children: ReactNode }) {
       }`}
     >
       <div
-        className={`bg-white p-8 rounded-xl shadow-lg border border-gray-200 relative w-full max-w-[720px] mx-auto transform transition-transform duration-300 ${
+        className={`bg-white p-8 rounded-xl shadow-lg border border-gray-200 relative mx-auto transform transition-transform duration-300 ${
           isVisible ? "scale-100" : "scale-90"
-        }`}
+        } ${width} ${height}`}
       >
         <CloseButton onClick={closeModal} />
         <div className="p-4 border-t bg-blue-50 rounded-lg">{children}</div>

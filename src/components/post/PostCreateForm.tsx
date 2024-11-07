@@ -3,21 +3,20 @@ import React, { useState } from "react";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useImageUpload } from "@/lib/post/hooks/useImageUpload";
 import { usePostForm } from "@/lib/post/hooks/usePostForm";
-import { useRouter } from "next/navigation";
 import { FaRegImage, FaPaperPlane } from "react-icons/fa";
+import { useAddPost } from "@/lib/post/hooks/useAddPost";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PostCreateForm: React.FC = () => {
   const { content, setContent, image, setImage } = usePostForm();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore(state => state.user);
-
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { uploadImage } = useImageUpload();
+  const { mutate: addPost, isPending: loading } = useAddPost();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
     try {
@@ -29,16 +28,11 @@ const PostCreateForm: React.FC = () => {
 
       if (!user) {
         setError("로그인 후에 게시물을 작성할 수 있습니다.");
-        setLoading(false);
         return;
       }
 
-      const response = await fetch(`/api/post/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      addPost(
+        {
           content,
           imageUrl,
           author: {
@@ -46,24 +40,21 @@ const PostCreateForm: React.FC = () => {
             displayName: user.name || "Anonymous",
             userImageUrl: user.imageUrl,
           },
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Post created:", data);
-        setContent("");
-        setImage(null);
-        router.back();
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || "게시물 생성 중 오류가 발생했습니다.");
-      }
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            setContent("");
+            setImage(null);
+          },
+          onError: () => {
+            setError("게시물 생성 중 오류가 발생했습니다.");
+          },
+        },
+      );
     } catch (err) {
       console.error("Error creating post:", err);
       setError("게시물 생성 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
     }
   };
 
