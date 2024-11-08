@@ -33,9 +33,9 @@ const ChatRoom = () => {
   };
 
   return (
-    <div className="max-w-full pt-4 mx-auto bg-black">
+    <div className="max-w-6xl pt-4 mx-auto">
       <div className="bg-white shadow-md rounded-lg mb-4 p-4">
-        <h1 className="text-2xl font-semibold mb-4">채팅방221</h1>
+        <h1 className="text-2xl font-semibold mb-4">채팅방</h1>
         <div className="h-64 overflow-y-auto mb-4">
           {messages.map(message => (
             <div key={message.id} className={`p-2 ${message.senderId === user?.uid ? "text-right" : "text-left"}`}>

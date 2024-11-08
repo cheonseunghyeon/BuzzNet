@@ -1,3 +1,5 @@
+// ProfileMain.tsx
+
 "use client";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useFollow } from "@/lib/follow/hooks/useFollow";
@@ -5,7 +7,7 @@ import { useUnfollow } from "@/lib/follow/hooks/useUnfollow";
 import { useUser } from "@/lib/user/hooks/useUser";
 import { useCheckIfFollow } from "@/lib/follow/hooks/useCheckIfFollow";
 import { useRouter } from "next/navigation";
-import { getOrCreateChatRoom } from "@/lib/chat/chatAPI";
+import { useGetOrCreateChatRoom } from "@/lib/chat/hooks/useChatRoom";
 
 const ProfileMain = ({ uid }: { uid: string }) => {
   const { data: author, isLoading: isAuthorLoading, isError: isAuthorError } = useUser(uid);
@@ -15,6 +17,7 @@ const ProfileMain = ({ uid }: { uid: string }) => {
 
   const { mutate: follow } = useFollow();
   const { mutate: unfollow } = useUnfollow();
+  const { mutate: createChatRoom } = useGetOrCreateChatRoom();
 
   const handleFollow = () => {
     if (!user || !user.uid) {
@@ -28,18 +31,21 @@ const ProfileMain = ({ uid }: { uid: string }) => {
       follow({ followerId: user.uid, followedId: uid });
     }
   };
-  const handleMessage = async () => {
+
+  const handleMessage = () => {
     if (!user || !user.uid) {
       console.error("User not logged in");
       return;
     }
 
-    try {
-      const id = await getOrCreateChatRoom(user.uid, uid);
-      router.push(`/mypage/chat/${id}`);
-    } catch (error) {
-      console.error("Failed to start chat:", error);
-    }
+    createChatRoom(
+      { user1Id: user.uid, user2Id: uid },
+      {
+        onSuccess: chatRoomId => {
+          router.push(`/mypage/chat/${chatRoomId}`);
+        },
+      },
+    );
   };
 
   if (isAuthorLoading || isFollowingLoading) return <p>Loading...</p>;
