@@ -38,7 +38,6 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // userId가 포함된 모든 채팅방을 조회하는 쿼리
     const chatRef = collection(db, "chats");
     const chatQuery = query(chatRef, where("userIds", "array-contains", userId));
     const chatSnapshot = await getDocs(chatQuery);
