@@ -34,7 +34,7 @@ const UserMenu = () => {
       </li>
       <li>
         <Link
-          href="/mypage/message"
+          href="/mypage/chat"
           className="flex items-center space-x-4 text-lg hover:bg-gray-200 p-3 rounded-lg transition-all duration-200"
         >
           <FaEnvelope className="w-6 h-6" />

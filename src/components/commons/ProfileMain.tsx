@@ -4,15 +4,18 @@ import { useFollow } from "@/lib/follow/hooks/useFollow";
 import { useUnfollow } from "@/lib/follow/hooks/useUnfollow";
 import { useUser } from "@/lib/user/hooks/useUser";
 import { useCheckIfFollow } from "@/lib/follow/hooks/useCheckIfFollow";
+import { useRouter } from "next/navigation";
+import { useGetOrCreateChatRoom } from "@/lib/chat/hooks/useChatRoom";
 
 const ProfileMain = ({ uid }: { uid: string }) => {
   const { data: author, isLoading: isAuthorLoading, isError: isAuthorError } = useUser(uid);
   const user = useAuthStore(state => state.user);
-
+  const router = useRouter();
   const { data: isFollowing, isLoading: isFollowingLoading } = useCheckIfFollow(user?.uid ?? "", uid);
 
   const { mutate: follow } = useFollow();
   const { mutate: unfollow } = useUnfollow();
+  const { mutate: createChatRoom } = useGetOrCreateChatRoom();
 
   const handleFollow = () => {
     if (!user || !user.uid) {
@@ -25,6 +28,22 @@ const ProfileMain = ({ uid }: { uid: string }) => {
     } else {
       follow({ followerId: user.uid, followedId: uid });
     }
+  };
+
+  const handleMessage = () => {
+    if (!user || !user.uid) {
+      console.error("User not logged in");
+      return;
+    }
+
+    createChatRoom(
+      { user1Id: user.uid, user2Id: uid },
+      {
+        onSuccess: chatRoomId => {
+          router.push(`/chat/${chatRoomId}`);
+        },
+      },
+    );
   };
 
   if (isAuthorLoading || isFollowingLoading) return <p>Loading...</p>;
@@ -56,7 +75,10 @@ const ProfileMain = ({ uid }: { uid: string }) => {
         >
           {isFollowing ? "언팔로우" : "팔로우"}
         </button>
-        <button className="px-5 py-2 font-medium rounded-lg shadow-md bg-gray-200 hover:bg-gray-300 text-gray-800">
+        <button
+          onClick={handleMessage}
+          className="px-5 py-2 font-medium rounded-lg shadow-md bg-gray-200 hover:bg-gray-300 text-gray-800"
+        >
           메시지
         </button>
       </div>
