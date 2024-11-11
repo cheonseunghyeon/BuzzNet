@@ -1,5 +1,3 @@
-// ProfileMain.tsx
-
 "use client";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useFollow } from "@/lib/follow/hooks/useFollow";

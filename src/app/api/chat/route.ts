@@ -29,3 +29,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to get or create chat room" }, { status: 500 });
   }
 }
+
+export async function GET(req: NextRequest) {
+  const userId = req.nextUrl.searchParams.get("userId");
+
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
+
+  try {
+    // userId가 포함된 모든 채팅방을 조회하는 쿼리
+    const chatRef = collection(db, "chats");
+    const chatQuery = query(chatRef, where("userIds", "array-contains", userId));
+    const chatSnapshot = await getDocs(chatQuery);
+
+    const chatRooms = chatSnapshot.docs.map(doc => ({
+      chatRoomId: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json({ chatRooms }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching chat rooms:", error);
+    return NextResponse.json({ error: "Failed to fetch chat rooms" }, { status: 500 });
+  }
+}

@@ -39,13 +39,14 @@ const ChatRoom = () => {
         <div className="h-64 overflow-y-auto mb-4">
           {messages.map(message => (
             <div key={message.id} className={`p-2 ${message.senderId === user?.uid ? "text-right" : "text-left"}`}>
-              <p
+              <div
                 className={`inline-block p-2 rounded-lg ${
                   message.senderId === user?.uid ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
                 }`}
               >
-                {message.text}
-              </p>
+                <p>{message.text}</p>
+              </div>
+              <small className="block mt-1 text-xs text-gray-500">{message.createdAt.toLocaleString()}</small>
             </div>
           ))}
         </div>
