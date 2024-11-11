@@ -42,3 +42,16 @@ export const subscribeToMessages = (chatId: string, callback: (messages: Message
     callback(messages);
   });
 };
+
+export async function getChatList(userId: string) {
+  const response = await fetch(`/api/chat?userId=${userId}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch chat rooms");
+  }
+
+  const data = await response.json();
+  return data.chatRooms || [];
+}

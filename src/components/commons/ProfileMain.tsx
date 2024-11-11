@@ -40,7 +40,7 @@ const ProfileMain = ({ uid }: { uid: string }) => {
       { user1Id: user.uid, user2Id: uid },
       {
         onSuccess: chatRoomId => {
-          router.push(`/mypage/chat/${chatRoomId}`);
+          router.push(`/chat/${chatRoomId}`);
         },
       },
     );
