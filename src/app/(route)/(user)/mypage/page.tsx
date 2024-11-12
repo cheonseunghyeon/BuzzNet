@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 
-import { PostType } from "../../../components/types";
+import { PostType } from "@/components/types";
 import Link from "next/link";
-import { fetchPosts } from "@/lib/fetchPosts";
 import Post from "@/components/post/PostItem";
+import { fetchPosts } from "@/lib/fetchPosts";
 
-const Profile = () => {
+const MyPage = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,4 +41,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyPage;
