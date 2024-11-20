@@ -1,5 +1,4 @@
 import React from "react";
-import notifications from "@/mock/notifications.json";
 
 const NotificationList = () => {
   return (
@@ -18,7 +17,8 @@ const NotificationList = () => {
         <hr className="my-4 border-gray-300 border-t-2" />
 
         <div className="mt-4 space-y-4">
-          {notifications.map(notification => (
+          알람 기능 추가 영역
+          {/* {notifications.map(notification => (
             <div key={notification.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-4">
                 <img
@@ -33,7 +33,7 @@ const NotificationList = () => {
               </div>
               <span className="text-sm text-gray-500">{new Date(notification.timestamp).toLocaleTimeString()}</span>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     </div>
